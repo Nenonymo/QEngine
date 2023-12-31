@@ -109,3 +109,6 @@ bool Complex::operator>  (Complex const& obj)
  *********/
 void Complex::print()
 {std::cout<<r<<"+"<<i<<"i"<<std::endl; }
+
+void Complex::print_nr()
+{std::cout<<r<<'+'<<i<<'i'; }

@@ -1,3 +1,6 @@
+#pragma once
+
+
 class Complex
 {
     public:
@@ -35,8 +38,10 @@ class Complex
         bool operator<  (Complex const& obj);
         bool operator>= (Complex const& obj);
         bool operator>  (Complex const& obj);
+
         //Debug
         void print();
+        void print_nr();
 
     private:
         //Values

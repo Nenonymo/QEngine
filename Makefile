@@ -6,6 +6,9 @@ TARGET = QEngine.exe
 
 OBJS =  $(SRC)/complex.o \
 		$(SRC)/matrices.o \
+		$(SRC)/bit.o \
+		$(SRC)/register.o \
+		$(SRC)/circuit.o \
 		$(SRC)/main.o
 
 CXX = g++
