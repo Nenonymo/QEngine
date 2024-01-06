@@ -3,14 +3,22 @@
 #include "register.h"
 #include <vector>
 
-struct operation
+class Operation
 {
-    unsigned short gate_number;
-    qb** target_qubit;
-    qb** target_qubit_2;
-    qb** control_qubit;
-    qb** control_qubit_2;
-    double parameter;
+    private:
+        char gate_number;
+        
+
+    public:
+        qb** target_qubit;
+        qb** target_qubit_2;
+        qb** control_qubit;
+        qb** control_qubit_2;
+        double parameter;
+
+        Operation(char gate_number, unsigned short tq_s, unsigned short tq2_s, 
+                                    unsigned short cq_s, unsigned short cq2_s);
+        ~Operation();
 };
 
 
@@ -20,6 +28,8 @@ class QuantumCircuit
         qb** qubits;
         cb** clbits;
         unsigned int n_qubit, n_clbit;
+
+        std::vector<Operation> circuit;
 
     public:
         //Constructors
@@ -31,44 +41,44 @@ class QuantumCircuit
 
         //Gates
         //Pauli gates
-        void x(unsigned short qubit);
-        void x(QuantumRegister qureg);
-        void y(unsigned short qubit);
-        void y(QuantumRegister qureg);
-        void z(unsigned short qubit);
-        void z(QuantumRegister qureg);
+        void x(unsigned short  target_qubit);
+        void x(QuantumRegister target_qureg);
+        void y(unsigned short  target_qubit);
+        void y(QuantumRegister target_qureg);
+        void z(unsigned short  target_qubit);
+        void z(QuantumRegister target_qureg);
 
         //Controlled Pauli gates
-        void cx(unsigned short control_qubit, unsigned short target_qubit);
+        void cx(unsigned short  control_qubit, unsigned short  target_qubit);
         void cx(QuantumRegister control_qureg, QuantumRegister target_qureg);
-        void cy(unsigned short control_qubit, unsigned short target_qubit);
+        void cy(unsigned short  control_qubit, unsigned short  target_qubit);
         void cy(QuantumRegister control_qureg, QuantumRegister target_qureg);
-        void cz(unsigned short control_qubit, unsigned short target_qubit);
+        void cz(unsigned short  control_qubit, unsigned short  target_qubit);
         void cz(QuantumRegister control_qureg, QuantumRegister target_qureg);
         
         //Hammard gates
-        void h(unsigned short qubit);
-        void h(QuantumRegister qureg);
+        void h(unsigned short  target_qubit);
+        void h(QuantumRegister target_qureg);
         //Controlled Hammard gates
-        void ch(unsigned short control_qubit, unsigned short target_qubit);
+        void ch(unsigned short  control_qubit, unsigned short  target_qubit);
         void ch(QuantumRegister control_qureg, QuantumRegister target_qureg);
 
         //S&T gates
-        void s(unsigned short qubit);
+        void s(unsigned short  qubit);
         void s(QuantumRegister qureg);
-        void t(unsigned short qubit);
+        void t(unsigned short  qubit);
         void t(QuantumRegister qureg);
 
         //Rotation gates
-        void rx(double angle, unsigned short qubit);
+        void rx(double angle, unsigned short  qubit);
         void rx(double angle, QuantumRegister qureg);
-        void ry(double angle, unsigned short qubit);
+        void ry(double angle, unsigned short  qubit);
         void ry(double angle, QuantumRegister qureg);
-        void rz(double angle, unsigned short qubit);
+        void rz(double angle, unsigned short  qubit);
         void rz(double angle, QuantumRegister qureg);
 
         //Swap gates
-        void swap(unsigned short target_qubit_1, unsigned short target_qubit_2);
+        void swap (unsigned short target_qubit_1, unsigned short target_qubit_2);
         void cswap(unsigned short control_qubit, unsigned short target_qubit_1, unsigned short target_qubit_2);
 
         //Controlled phase gate
