@@ -159,6 +159,16 @@ void QuantumCircuit::cz(QuantumRegister control_qureg, QuantumRegister target_qu
     circuit.push_back(tmp);
 }
 
+//Toffoli gate
+void QuantumCircuit::ccx(unsigned short control_qubit_1, unsigned short control_qubit_2, unsigned short target_qubit)
+{
+    Operation tmp(2, 1, 0, 1, 1);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.control_qubit[0] = this->qubits[control_qubit_1];
+    tmp.control_qubit_2[0] = this->qubits[control_qubit_2];
+    circuit.push_back(tmp);
+}
+
 //Hammard gates
 void QuantumCircuit::h(unsigned short target_qubit)
 {
@@ -174,39 +184,175 @@ void QuantumCircuit::h(QuantumRegister target_qureg)
     circuit.push_back(tmp);
 }
 //Controlled Hammard gates
-void QuantumCircuit::ch(unsigned short control_qubit, unsigned short target_qubit);
-void QuantumCircuit::ch(QuantumRegister control_qureg, QuantumRegister target_qureg);
+void QuantumCircuit::ch(unsigned short control_qubit, unsigned short target_qubit)
+{
+    Operation tmp(31, 1, 0, 1, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.control_qubit[0] = this->qubits[control_qubit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::ch(QuantumRegister control_qureg, QuantumRegister target_qureg)
+{
+    if (target_qureg.get_size() != control_qureg.get_size())
+    {
+        std::cerr<<"Registers must be of same dimension"<<std::endl; 
+        return;
+    }
+    Operation tmp(31, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {
+        tmp.target_qubit[i] = target_qureg.get_bit_address(i); 
+        tmp.control_qubit[i] = control_qureg.get_bit_address(i);
+    }
+    circuit.push_back(tmp);
+}
 
 //S&T gates
-void QuantumCircuit::s(unsigned short qubit);
-void QuantumCircuit::s(QuantumRegister qureg);
-void QuantumCircuit::t(unsigned short qubit);
-void QuantumCircuit::t(QuantumRegister qureg);
+void QuantumCircuit::s(unsigned short target_qubit)
+{
+    Operation tmp(40, 1, 0, 0, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::s(QuantumRegister target_qureg)
+{
+    Operation tmp(40, target_qureg.get_size(), 0, 0, 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {tmp.target_qubit[0] = target_qureg.get_bit_address(i); }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::t(unsigned short target_qubit)
+{
+    Operation tmp(41, 1, 0, 0, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::t(QuantumRegister target_qureg)
+{
+    Operation tmp(41, target_qureg.get_size(), 0, 0, 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {tmp.target_qubit[0] = target_qureg.get_bit_address(i); }
+    circuit.push_back(tmp);
+}
 
 //Rotation gates
-void QuantumCircuit::rx(double angle, unsigned short qubit);
-void QuantumCircuit::rx(double angle, QuantumRegister qureg);
-void QuantumCircuit::ry(double angle, unsigned short qubit);
-void QuantumCircuit::ry(double angle, QuantumRegister qureg);
-void QuantumCircuit::rz(double angle, unsigned short qubit);
-void QuantumCircuit::rz(double angle, QuantumRegister qureg);
+void QuantumCircuit::rx(double angle, unsigned short target_qubit)
+{
+    Operation tmp(5, 1, 0, 0, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.parameter = angle;
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::rx(double angle, QuantumRegister target_qureg)
+{
+    Operation tmp(5, target_qureg.get_size(), 0, 0, 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
+    tmp.parameter = angle;
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::ry(double angle, unsigned short target_qubit)
+{
+    Operation tmp(15, 1, 0, 0, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.parameter = angle;
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::ry(double angle, QuantumRegister target_qureg)
+{
+    Operation tmp(15, target_qureg.get_size(), 0, 0, 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
+    tmp.parameter = angle;
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::rz(double angle, unsigned short target_qubit)
+{
+    Operation tmp(25, 1, 0, 0, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.parameter = angle;
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::rz(double angle, QuantumRegister target_qureg)
+{
+    Operation tmp(25, target_qureg.get_size(), 0, 0, 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
+    tmp.parameter = angle;
+    circuit.push_back(tmp);
+}
 
 //Swap gates
-void QuantumCircuit::swap(unsigned short target_qubit_1, unsigned short target_qubit_2);
-void QuantumCircuit::cswap(unsigned short control_qubit, unsigned short target_qubit_1, unsigned short target_qubit_2);
+void QuantumCircuit::swap(unsigned short target_qubit_1, unsigned short target_qubit_2)
+{
+    Operation tmp(50, 1, 1, 0, 0);
+    tmp.target_qubit[0] = this->qubits[target_qubit_1];
+    tmp.target_qubit_2[0] = this->qubits[target_qubit_2];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::swap(QuantumRegister target_qureg_1, QuantumRegister target_qureg_2)
+{
+    if (target_qureg_1.get_size() != target_qureg_2.get_size())
+    {
+        std::cerr<<"Quantum Registers must be of same dimension"<<std::endl;
+        return;
+    }
+    Operation tmp(50, target_qureg_1.get_size(), target_qureg_2.get_size(), 0, 0);
+    for (unsigned short i=0; i<target_qureg_1.get_size(); i++)
+    {
+        tmp.target_qubit[i] = target_qureg_1.get_bit_address(i);
+        tmp.target_qubit_2[i] = target_qureg_2.get_bit_address(i);
+    }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::cswap(unsigned short control_qubit, unsigned short target_qubit_1, unsigned short target_qubit_2)
+{
+    Operation tmp(51, 1, 1, 1, 0);
+    tmp.control_qubit[0] = this->qubits[control_qubit];
+    tmp.target_qubit[0] = this->qubits[target_qubit_1];
+    tmp.target_qubit_2[0] = this->qubits[target_qubit_2];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::cswap(QuantumRegister control_qureg, QuantumRegister target_qureg_1, QuantumRegister target_qureg_2)
+{
+    if (control_qureg.get_size() != target_qureg_1.get_size() or control_qureg.get_size() != target_qureg_2.get_size())
+    {
+
+    }
+}
 
 //Controlled phase gate
-void QuantumCircuit::cp(double theta, unsigned short control_qubit, unsigned short target_qubit);
+void QuantumCircuit::cp(double theta, unsigned short control_qubit, unsigned short target_qubit)
+{
+    Operation tmp(60, 1, 0, 1, 0);
+    tmp.control_qubit[0] = this->qubits[control_qubit];
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.parameter = theta;
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::cp(double theta, QuantumRegister control_qureg, QuantumRegister target_qureg)
+{
+    if (control_qureg.get_size() != control_qureg.get_size())
+    {
+        std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
+        return;
+    }
+    Operation tmp(60, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {
+        tmp.control_qubit[i] = control_qureg.get_bit_address(i);
+        tmp.target_qubit[i] = target_qureg.get_bit_address(i);
+    }
+    tmp.parameter = theta;
+    circuit.push_back(tmp);
+}
 
-//Toffoli gate
-void QuantumCircuit::ccx(unsigned short control_qubit_1, unsigned short control_qubit_2, unsigned short qubit);
 
 
 /*************
  * OPERATION *
  *************/
-Operation::Operation(char gate_number, unsigned short tq_s, unsigned short tq2_s,
-                                       unsigned short cq_s, unsigned short cq2_s)
+Operation::Operation(char gate_number, unsigned short tq_s, unsigned short tq2_s, unsigned short cq_s, unsigned short cq2_s)
 {
     this->gate_number = gate_number;
     this->target_qubit = new qb*[tq_s];
