@@ -372,6 +372,28 @@ void QuantumCircuit::cp(double theta, QuantumRegister control_qureg, QuantumRegi
     circuit.push_back(tmp);
 }
 
+//Barrier
+void QuantumCircuit::barrier()
+{
+    Operation tmp(100, 0);
+    circuit.push_back(tmp);
+}
+
+//Measurement
+void QuantumCircuit::measure(unsigned short target_qubit)
+{
+    Operation tmp(101, 1);
+    tmp.target_qubit[0] = this->qubits[target_qubit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::measure(QuantumRegister target_qureg)
+{
+    Operation tmp(101, target_qureg.get_size());
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
+    circuit.push_back(tmp);
+}
+
 
 
 /*************
@@ -466,12 +488,27 @@ Operation::Operation(char gate_number, unsigned short size)
             this->target_qubit = new qb*[2*size];
             this->control_qubit = new qb*[size];
             break;
+
+
         case 60: // cp  1t  1c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size];
             break;
+
+        // Circuit management
+        case 100: // barrier
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            break;
+        case 101: // measuring
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+
+        // Non listed gate number
         default:
             std::cerr<<"Invalid gate number, check documentation for more informations"<<std::endl;
             break;
+        
+        
     }
 }

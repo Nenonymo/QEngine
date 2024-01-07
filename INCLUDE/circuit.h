@@ -88,5 +88,10 @@ class QuantumCircuit
         //Controlled phase gate
         void cp(double theta, unsigned short  control_qubit, unsigned short  target_qubit); //  60
         void cp(double theta, QuantumRegister control_qureg, QuantumRegister target_qureg); //  60
+
+        //Circuit management
+        void barrier(); //  100
+        void measure(unsigned short  target_qubit); //  101
+        void measure(QuantumRegister target_qureg); //  101
         
 };
