@@ -11,13 +11,11 @@ class Operation
 
     public:
         qb** target_qubit;
-        qb** target_qubit_2;
         qb** control_qubit;
-        qb** control_qubit_2;
         double parameter;
+        unsigned short size;
 
-        Operation(char gate_number, unsigned short tq_s, unsigned short tq2_s, 
-                                    unsigned short cq_s, unsigned short cq2_s);
+        Operation(char gate_number, unsigned short size);
         ~Operation();
 };
 
@@ -57,7 +55,8 @@ class QuantumCircuit
         void cz(QuantumRegister control_qureg, QuantumRegister target_qureg); //    21
 
         //Toffoli gate
-        void ccx(unsigned short control_qubit_1, unsigned short control_qubit_2, unsigned short qubit); //  2
+        void ccx(unsigned short  control_qubit_1, unsigned short  control_qubit_2, unsigned short  target_qubit); //    2
+        void ccx(QuantumRegister control_qureg_1, QuantumRegister control_qureg_2, QuantumRegister target_qureg); //    2
         
         //Hammard gates
         void h(unsigned short  target_qubit); //    30

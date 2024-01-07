@@ -53,39 +53,39 @@ QuantumCircuit::~QuantumCircuit()
 //Pauli gates
 void QuantumCircuit::x(unsigned short target_qubit)
 {
-    Operation tmp(0, 1, 0, 0, 0);
+    Operation tmp(0, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::x(QuantumRegister target_qureg)
 {
-    Operation tmp(0, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(0, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
 }
 void QuantumCircuit::y(unsigned short target_qubit)
 {
-    Operation tmp(10, 1, 0, 0, 0);
+    Operation tmp(10, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::y(QuantumRegister target_qureg)
 {
-    Operation tmp(10, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(10, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
 }
 void QuantumCircuit::z(unsigned short target_qubit)
 {
-    Operation tmp(20, 1, 0, 0, 0);
+    Operation tmp(20, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::z(QuantumRegister target_qureg)
 {
-    Operation tmp(20, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(20, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
@@ -94,7 +94,7 @@ void QuantumCircuit::z(QuantumRegister target_qureg)
 //Controlled Pauli gates
 void QuantumCircuit::cx(unsigned short control_qubit, unsigned short target_qubit)
 {
-    Operation tmp(1, 1, 0, 1, 0);
+    Operation tmp(1, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.control_qubit[0] = this->qubits[control_qubit];
     circuit.push_back(tmp);
@@ -106,7 +106,7 @@ void QuantumCircuit::cx(QuantumRegister control_qureg, QuantumRegister target_qu
         std::cerr<<"Registers must be of same dimension"<<std::endl; 
         return;
     }
-    Operation tmp(1, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    Operation tmp(1, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {
         tmp.target_qubit[i] = target_qureg.get_bit_address(i); 
@@ -116,7 +116,7 @@ void QuantumCircuit::cx(QuantumRegister control_qureg, QuantumRegister target_qu
 }
 void QuantumCircuit::cy(unsigned short control_qubit, unsigned short target_qubit)
 {
-    Operation tmp(11, 1, 0, 1, 0);
+    Operation tmp(11, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.control_qubit[0] = this->qubits[control_qubit];
     circuit.push_back(tmp);
@@ -128,7 +128,7 @@ void QuantumCircuit::cy(QuantumRegister control_qureg, QuantumRegister target_qu
         std::cerr<<"Registers must be of same dimension"<<std::endl; 
         return;
     }
-    Operation tmp(11, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    Operation tmp(11, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {
         tmp.target_qubit[i] = target_qureg.get_bit_address(i); 
@@ -138,7 +138,7 @@ void QuantumCircuit::cy(QuantumRegister control_qureg, QuantumRegister target_qu
 }
 void QuantumCircuit::cz(unsigned short control_qubit, unsigned short target_qubit)
 {
-    Operation tmp(21, 1, 0, 1, 0);
+    Operation tmp(21, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.control_qubit[0] = this->qubits[control_qubit];
     circuit.push_back(tmp);
@@ -150,7 +150,7 @@ void QuantumCircuit::cz(QuantumRegister control_qureg, QuantumRegister target_qu
         std::cerr<<"Registers must be of same dimension"<<std::endl; 
         return;
     }
-    Operation tmp(21, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    Operation tmp(21, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {
         tmp.target_qubit[i] = target_qureg.get_bit_address(i); 
@@ -162,23 +162,39 @@ void QuantumCircuit::cz(QuantumRegister control_qureg, QuantumRegister target_qu
 //Toffoli gate
 void QuantumCircuit::ccx(unsigned short control_qubit_1, unsigned short control_qubit_2, unsigned short target_qubit)
 {
-    Operation tmp(2, 1, 0, 1, 1);
+    Operation tmp(2, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.control_qubit[0] = this->qubits[control_qubit_1];
-    tmp.control_qubit_2[0] = this->qubits[control_qubit_2];
+    tmp.control_qubit[1] = this->qubits[control_qubit_2];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::ccx(QuantumRegister control_qureg_1, QuantumRegister control_qureg_2, QuantumRegister target_qureg)
+{
+    if (control_qureg_1.get_size() != control_qureg_2.get_size() or control_qureg_1.get_size() != target_qureg.get_size())
+    {
+        std::cerr<<"Registers must be of same dimension"<<std::endl;
+        return;
+    }
+    Operation tmp(2, target_qureg.get_size());
+    for (unsigned short i=0; i<target_qureg.get_size(); i++)
+    {
+        tmp.target_qubit[i] = target_qureg.get_bit_address(i);
+        tmp.control_qubit[i] = control_qureg_1.get_bit_address(i);
+        tmp.control_qubit[i+1] = control_qureg_2.get_bit_address(i);
+    }
     circuit.push_back(tmp);
 }
 
 //Hammard gates
 void QuantumCircuit::h(unsigned short target_qubit)
 {
-    Operation tmp(30, 1, 0, 0, 0);
+    Operation tmp(30, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::h(QuantumRegister target_qureg)
 {
-    Operation tmp(30, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(30, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
@@ -186,7 +202,7 @@ void QuantumCircuit::h(QuantumRegister target_qureg)
 //Controlled Hammard gates
 void QuantumCircuit::ch(unsigned short control_qubit, unsigned short target_qubit)
 {
-    Operation tmp(31, 1, 0, 1, 0);
+    Operation tmp(31, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.control_qubit[0] = this->qubits[control_qubit];
     circuit.push_back(tmp);
@@ -198,7 +214,7 @@ void QuantumCircuit::ch(QuantumRegister control_qureg, QuantumRegister target_qu
         std::cerr<<"Registers must be of same dimension"<<std::endl; 
         return;
     }
-    Operation tmp(31, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    Operation tmp(31, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {
         tmp.target_qubit[i] = target_qureg.get_bit_address(i); 
@@ -210,26 +226,26 @@ void QuantumCircuit::ch(QuantumRegister control_qureg, QuantumRegister target_qu
 //S&T gates
 void QuantumCircuit::s(unsigned short target_qubit)
 {
-    Operation tmp(40, 1, 0, 0, 0);
+    Operation tmp(40, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::s(QuantumRegister target_qureg)
 {
-    Operation tmp(40, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(40, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[0] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
 }
 void QuantumCircuit::t(unsigned short target_qubit)
 {
-    Operation tmp(41, 1, 0, 0, 0);
+    Operation tmp(41, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::t(QuantumRegister target_qureg)
 {
-    Operation tmp(41, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(41, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[0] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
@@ -238,14 +254,14 @@ void QuantumCircuit::t(QuantumRegister target_qureg)
 //Rotation gates
 void QuantumCircuit::rx(double angle, unsigned short target_qubit)
 {
-    Operation tmp(5, 1, 0, 0, 0);
+    Operation tmp(5, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.parameter = angle;
     circuit.push_back(tmp);
 }
 void QuantumCircuit::rx(double angle, QuantumRegister target_qureg)
 {
-    Operation tmp(5, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(5, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     tmp.parameter = angle;
@@ -253,14 +269,14 @@ void QuantumCircuit::rx(double angle, QuantumRegister target_qureg)
 }
 void QuantumCircuit::ry(double angle, unsigned short target_qubit)
 {
-    Operation tmp(15, 1, 0, 0, 0);
+    Operation tmp(15, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.parameter = angle;
     circuit.push_back(tmp);
 }
 void QuantumCircuit::ry(double angle, QuantumRegister target_qureg)
 {
-    Operation tmp(15, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(15, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     tmp.parameter = angle;
@@ -268,14 +284,14 @@ void QuantumCircuit::ry(double angle, QuantumRegister target_qureg)
 }
 void QuantumCircuit::rz(double angle, unsigned short target_qubit)
 {
-    Operation tmp(25, 1, 0, 0, 0);
+    Operation tmp(25, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.parameter = angle;
     circuit.push_back(tmp);
 }
 void QuantumCircuit::rz(double angle, QuantumRegister target_qureg)
 {
-    Operation tmp(25, target_qureg.get_size(), 0, 0, 0);
+    Operation tmp(25, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     tmp.parameter = angle;
@@ -285,9 +301,9 @@ void QuantumCircuit::rz(double angle, QuantumRegister target_qureg)
 //Swap gates
 void QuantumCircuit::swap(unsigned short target_qubit_1, unsigned short target_qubit_2)
 {
-    Operation tmp(50, 1, 1, 0, 0);
+    Operation tmp(50, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit_1];
-    tmp.target_qubit_2[0] = this->qubits[target_qubit_2];
+    tmp.target_qubit[1] = this->qubits[target_qubit_2];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::swap(QuantumRegister target_qureg_1, QuantumRegister target_qureg_2)
@@ -297,34 +313,43 @@ void QuantumCircuit::swap(QuantumRegister target_qureg_1, QuantumRegister target
         std::cerr<<"Quantum Registers must be of same dimension"<<std::endl;
         return;
     }
-    Operation tmp(50, target_qureg_1.get_size(), target_qureg_2.get_size(), 0, 0);
+    Operation tmp(50, target_qureg_1.get_size()*2);
     for (unsigned short i=0; i<target_qureg_1.get_size(); i++)
     {
         tmp.target_qubit[i] = target_qureg_1.get_bit_address(i);
-        tmp.target_qubit_2[i] = target_qureg_2.get_bit_address(i);
+        tmp.target_qubit[i+1] = target_qureg_2.get_bit_address(i);
     }
     circuit.push_back(tmp);
 }
 void QuantumCircuit::cswap(unsigned short control_qubit, unsigned short target_qubit_1, unsigned short target_qubit_2)
 {
-    Operation tmp(51, 1, 1, 1, 0);
+    Operation tmp(51, 1);
     tmp.control_qubit[0] = this->qubits[control_qubit];
     tmp.target_qubit[0] = this->qubits[target_qubit_1];
-    tmp.target_qubit_2[0] = this->qubits[target_qubit_2];
+    tmp.target_qubit[1] = this->qubits[target_qubit_2];
     circuit.push_back(tmp);
 }
 void QuantumCircuit::cswap(QuantumRegister control_qureg, QuantumRegister target_qureg_1, QuantumRegister target_qureg_2)
 {
     if (control_qureg.get_size() != target_qureg_1.get_size() or control_qureg.get_size() != target_qureg_2.get_size())
     {
-
+        std::cerr<<"Registers must be of the same size"<<std::endl;
+        return;
     }
+    Operation tmp(51, control_qureg.get_size());
+    for (unsigned short i=0; i<control_qureg.get_size(); i++)
+    {
+        tmp.control_qubit[i] = control_qureg.get_bit_address(i);
+        tmp.target_qubit[i] = target_qureg_1.get_bit_address(i);
+        tmp.target_qubit[i+1] = target_qureg_2.get_bit_address(i);
+    }
+    circuit.push_back(tmp);
 }
 
 //Controlled phase gate
 void QuantumCircuit::cp(double theta, unsigned short control_qubit, unsigned short target_qubit)
 {
-    Operation tmp(60, 1, 0, 1, 0);
+    Operation tmp(60, 1);
     tmp.control_qubit[0] = this->qubits[control_qubit];
     tmp.target_qubit[0] = this->qubits[target_qubit];
     tmp.parameter = theta;
@@ -337,7 +362,7 @@ void QuantumCircuit::cp(double theta, QuantumRegister control_qureg, QuantumRegi
         std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
         return;
     }
-    Operation tmp(60, target_qureg.get_size(), 0, control_qureg.get_size(), 0);
+    Operation tmp(60, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
     {
         tmp.control_qubit[i] = control_qureg.get_bit_address(i);
@@ -352,11 +377,101 @@ void QuantumCircuit::cp(double theta, QuantumRegister control_qureg, QuantumRegi
 /*************
  * OPERATION *
  *************/
-Operation::Operation(char gate_number, unsigned short tq_s, unsigned short tq2_s, unsigned short cq_s, unsigned short cq2_s)
+Operation::Operation(char gate_number, unsigned short size)
 {
     this->gate_number = gate_number;
-    this->target_qubit = new qb*[tq_s];
-    this->target_qubit_2 = new qb*[tq2_s];
-    this->control_qubit = new qb*[cq_s];
-    this->control_qubit_2 = new qb*[cq2_s];
+    this->size = size;
+    switch(gate_number)
+    {
+        // x Gates
+        case 0: //  x   1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+        case 1: //  cx  1t  1c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size];
+            break;
+        case 2: //  ccx 1t  2c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size*2];
+            break;
+        case 5: //  rx  1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+
+        // y Gates
+        case 10: // y   1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+        case 11: // cy  1t  1c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size];
+            break;
+        case 12: // ccy 1t  2c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size*2];
+            break;
+        case 15: // ry  1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+
+        // z Gates
+        case 20: // z   1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+        case 21: // cz  1t  1c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size];
+            break;
+        case 22: // ccz 1t  2c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size*2];
+            break;
+        case 25: // rz  1t  0t
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+
+        // Hammard Gates
+        case 30: // h   1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+        case 31: // ch  1t  1c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size];
+            break;
+
+        // S & T
+        case 40: // s   1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+        case 41: // t   1t  0c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = nullptr;
+            break;
+
+        // Swap
+        case 50: // Swap    2t  0c
+            this->target_qubit = new qb*[2*size];
+            this->control_qubit = nullptr;
+            break;
+        case 51: // cSwap   2t  1c
+            this->target_qubit = new qb*[2*size];
+            this->control_qubit = new qb*[size];
+            break;
+        case 60: // cp  1t  1c
+            this->target_qubit = new qb*[size];
+            this->control_qubit = new qb*[size];
+            break;
+        default:
+            std::cerr<<"Invalid gate number, check documentation for more informations"<<std::endl;
+            break;
+    }
 }
