@@ -1,11 +1,12 @@
 #include "circuit.h"
 
 #include <iostream>
-/****************************
- * QUANTUM CIRCUIT    CLASS *
- ****************************/
 
-//Constructors and destructor
+
+
+/***************************
+ * CONSTRUCTORS/DESTRUCTOR *
+ ***************************/
 QuantumCircuit::QuantumCircuit(unsigned int n_qubit, unsigned int n_clbit, double global_phase)
 {
     this->n_qubit = n_qubit;
@@ -17,7 +18,6 @@ QuantumCircuit::QuantumCircuit(unsigned int n_qubit, unsigned int n_clbit, doubl
     for (unsigned int i = 0; i<n_clbit; i++)
     {clbits[i] = new cb(); }
 }
-
 QuantumCircuit::QuantumCircuit(QuantumRegister qr, ClassicalRegister cr, double global_phase)
 {
     this->n_qubit = qr.get_size();
@@ -29,7 +29,6 @@ QuantumCircuit::QuantumCircuit(QuantumRegister qr, ClassicalRegister cr, double 
     for (unsigned short i = 0; i<n_clbit; i++)
     {clbits[i] = cr.get_bit_address(i); }
 }
-
 QuantumCircuit::~QuantumCircuit()
 {
     for (unsigned int i=0; i<n_qubit; i++)
@@ -48,8 +47,9 @@ QuantumCircuit::~QuantumCircuit()
 
 
 
-//Gates
-
+/*********
+ * GATES *
+ *********/
 //Pauli gates
 void QuantumCircuit::x(unsigned short target_qubit)
 {
@@ -396,6 +396,23 @@ void QuantumCircuit::measure(QuantumRegister target_qureg)
 
 
 
+/**********************
+ * CIRCUIT MANAGEMENT *
+ **********************/
+//Circuit cleaning
+void QuantumCircuit::purge()
+{}
+void QuantumCircuit::optimize()
+{}
+void QuantumCircuit::print()
+{}
+void QuantumCircuit::debug_operations()
+{}
+void QuantumCircuit::print_circuit()
+{}
+
+
+
 /*************
  * OPERATION *
  *************/
@@ -510,5 +527,135 @@ Operation::Operation(char gate_number, unsigned short size)
             break;
         
         
+    }
+}
+
+void Operation::debug_operation()
+{
+    switch(gate_number)
+    {
+        // x Gates
+        case 0: //  x   1t  0c
+            printf("Gate %d: %s", this->gate_number, "x");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+        case 1: //  cx  1t  1c
+            printf("Gate %d: %s", this->gate_number, "cx");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c=%d}", i, this->target_qubit[i], this->control_qubit[i]); }
+            break;
+        case 2: //  ccx 1t  2c
+            printf("Gate %d: %s", this->gate_number, "ccx");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c_1=%d; c_2=%d}", i, this->target_qubit[i], this->control_qubit[i*2], this->control_qubit[i*2 + 1]); }
+            break;
+        case 5: //  rx  1t  0c
+            printf("Gate %d: %s", this->gate_number, "rx");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+
+        // y Gates
+        case 10: // y   1t  0c
+            printf("Gate %d: %s", this->gate_number, "y");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+        case 11: // cy  1t  1c
+            printf("Gate %d: %s", this->gate_number, "cy");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c=%d}", i, this->target_qubit[i], this->control_qubit[i]); }
+            break;
+        case 12: // ccy 1t  2c
+            printf("Gate %d: %s", this->gate_number, "ccy");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c_1=%d; c_2=%d}", i, this->target_qubit[i], this->control_qubit[i*2], this->control_qubit[i*2 + 1]); }
+            break;
+        case 15: // ry  1t  0c
+            printf("Gate %d: %s", this->gate_number, "ry");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+
+        // z Gates
+        case 20: // z   1t  0c
+            printf("Gate %d: %s", this->gate_number, "z");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+        case 21: // cz  1t  1c
+            printf("Gate %d: %s", this->gate_number, "cz");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c=%d}", i, this->target_qubit[i], this->control_qubit[i]); }
+            break;
+        case 22: // ccz 1t  2c
+            printf("Gate %d: %s", this->gate_number, "ccz");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c_1=%d; c_2=%d}", i, this->target_qubit[i], this->control_qubit[i*2], this->control_qubit[i*2 + 1]); }
+            break;
+        case 25: // rz  1t  0t
+            printf("Gate %d: %s", this->gate_number, "rz");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+
+        // Hammard Gates
+        case 30: // h   1t  0c
+            printf("Gate %d: %s", this->gate_number, "h");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+        case 31: // ch  1t  1c
+            printf("Gate %d: %s", this->gate_number, "ch");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d; c=%d}", i, this->target_qubit[i], this->control_qubit[i]); }
+            break;
+
+        // S & T
+        case 40: // s   1t  0c
+            printf("Gate %d: %s", this->gate_number, "s");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+        case 41: // t   1t  0c
+            printf("Gate %d: %s", this->gate_number, "t");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+
+        // Swap
+        case 50: // Swap    2t  0c
+            printf("Gate %d: %s", this->gate_number, "swap");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t_1=%d; t_2=%d}", i, this->target_qubit[i*2], this->target_qubit[i*2 + 1]); }
+            break;
+        case 51: // cSwap   2t  1c
+            printf("Gate %d: %s", this->gate_number, "cswap");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t_1=%d; t_2=%d}", i, this->target_qubit[i*2], this->target_qubit[i*2 + 1]); }
+            break;
+
+        // Controlled phase
+        case 60: // cp  1t  1c
+            printf("Gate %d: %s", this->gate_number, "cp");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t_1=%d; t_2=%d; c=%d}", i, this->target_qubit[i*2], this->target_qubit[i*2 + 1], this->target_qubit[i]); }
+            break;
+
+        // Circuit management
+        case 100: // barrier
+            printf("Gate %d: %s", this->gate_number, "barrier");
+            break;
+        case 101: // measuring
+            printf("Gate %d: %s", this->gate_number, "measure");
+            for(unsigned short i=0; i<this->size; i++)
+            {printf("Op n°%d: {t=%d}", i, this->target_qubit[i]); }
+            break;
+
+        // Non listed gate number
+        default:
+            std::cerr<<"Invalid gate number, check documentation for more informations"<<std::endl;
+            break;
     }
 }

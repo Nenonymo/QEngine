@@ -17,6 +17,8 @@ class Operation
 
         Operation(char gate_number, unsigned short size);
         ~Operation();
+
+        void debug_operation();
 };
 
 
@@ -89,9 +91,19 @@ class QuantumCircuit
         void cp(double theta, unsigned short  control_qubit, unsigned short  target_qubit); //  60
         void cp(double theta, QuantumRegister control_qureg, QuantumRegister target_qureg); //  60
 
-        //Circuit management
+        //Circuit operations
         void barrier(); //  100
         void measure(unsigned short  target_qubit); //  101
         void measure(QuantumRegister target_qureg); //  101
         
+
+
+        //Circuit management
+
+        //Circuit cleaning
+        void purge();
+        void optimize();
+        void print();
+        void debug_operations();
+        void print_circuit();
 };
