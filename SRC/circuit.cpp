@@ -400,12 +400,27 @@ void QuantumCircuit::measure(QuantumRegister target_qureg)
  * CIRCUIT MANAGEMENT *
  **********************/
 //Circuit cleaning
-void QuantumCircuit::purge()
-{}
+void QuantumCircuit::purge_operations()
+{
+    for (unsigned short i=circuit.size(); i>0; --i)
+    {
+        if (circuit[i].target_qubit != nullptr)
+        {delete[] circuit[i].target_qubit; }
+        if (circuit[i].control_qubit != nullptr)
+        {delete[] circuit[i].control_qubit; }
+        circuit.pop_back();
+    }
+}
 void QuantumCircuit::optimize()
 {}
 void QuantumCircuit::print()
-{}
+{
+    printf("Debug of QuantumCircuit.");
+    printf("Contains: \n\t%d\tqubits\n\t%d\tclbits\n\t%d\tgates", this->n_qubit, this->n_clbit, this->circuit.size());
+    printf("Qubits:");
+    for (unsigned short i=0; i<n_qubit; i++) {printf("\t%d", qubits[i]); }
+    for (unsigned short i=0; i<n_clbit; i++) {printf("\t%d", clbits[i]); }
+}
 void QuantumCircuit::debug_operations()
 {
     printf("Debug of Quantum Circuit Operations:\n");

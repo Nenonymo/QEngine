@@ -101,7 +101,7 @@ class QuantumCircuit
         //Circuit management
 
         //Circuit cleaning
-        void purge();
+        void purge_operations();
         void optimize();
         void print();
         void debug_operations();
