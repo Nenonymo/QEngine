@@ -437,7 +437,84 @@ void QuantumCircuit::print_circuit()
 /*********************
  * CIRCUIT EMULATION *
  *********************/
+std::vector<char> QuantumCircuit::run()
+{
+    unsigned short n = this->circuit.size();
+    std::vector<char> results;
 
+    for (unsigned short op_index=0; op_index<n; op_index++)
+    {
+        switch (this->circuit[op_index].get_gate_number())
+        {
+            case 0: //x
+                this->run_x(op_index);
+                break;
+            case 1: //cx
+                this->run_cx(op_index);
+                break;
+            case 2: //ccx
+                this->run_ccx(op_index);
+                break;
+            case 5: //rx
+                this->run_rx(op_index);
+                break;
+            case 10: //y
+                this->run_y(op_index);
+                break;
+            case 11: //cy
+                this->run_cy(op_index);
+                break;
+            case 12: //ccy
+                this->run_ccy(op_index);
+                break;
+            case 15: //ry
+                this->run_ry(op_index);
+                break;
+            case 20: //z
+                this->run_z(op_index);
+                break;
+            case 21: //cz
+                this->run_cz(op_index);
+                break;
+            case 22: //ccz
+                this->run_ccz(op_index);
+                break;
+            case 25: //rz
+                this->run_rz(op_index);
+                break;
+            case 30: //h
+                this->run_h(op_index);
+                break;
+            case 31: //ch
+                this->run_ch(op_index);
+                break;
+            case 40: //s
+                this->run_s(op_index);
+                break;
+            case 41: //t
+                this->run_t(op_index);
+                break;
+            case 50: //swap
+                this->run_swap(op_index);
+                break;
+            case 51: //cswap
+                this->run_cswap(op_index);
+                break;
+            case 60: //cp
+                this->run_cp(op_index);
+                break;
+            case 100: //barrier
+                this->run_barrier(op_index);
+                break;
+            case 101:
+                std::vector<char> res = this->run_measure(op_index);
+                for (unsigned short elt=0; elt<res.size(); elt++)
+                {results.push_back(res[elt]); }
+                break;
+        }
+    }
+    return results;
+}
 
 
 
@@ -455,7 +532,7 @@ void QuantumCircuit::run_x(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 0)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -471,7 +548,7 @@ void QuantumCircuit::run_y(unsigned short op_index) //Multiply by xGate matrix (
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 10)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -487,7 +564,7 @@ void QuantumCircuit::run_z(unsigned short op_index) //Multiply by xGate matrix (
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 20)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -505,7 +582,7 @@ void QuantumCircuit::run_cx(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 1)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -525,7 +602,7 @@ void QuantumCircuit::run_cy(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 11)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -545,7 +622,7 @@ void QuantumCircuit::run_cz(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 21)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -565,7 +642,7 @@ void QuantumCircuit::run_ccx(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 2)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -586,13 +663,63 @@ void QuantumCircuit::run_ccx(unsigned short op_index)
         (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
     }
 }
+void QuantumCircuit::run_ccy(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 12)
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
+
+    for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
+    {
+        //Control bit n°1 (control_qubit[op_number*2]), skip if not |1>
+        if ((*(this->circuit[op_index].control_qubit[2*op_number])).value.r != 0.0 ||
+            (*(this->circuit[op_index].control_qubit[2*op_number])).value.i != 1.0)
+        {return; }
+        //Control bit n°2 (control_qubit[op_number*2 + 1]), skip if not |1>
+        if ((*(this->circuit[op_index].control_qubit[2*op_number+1])).value.r != 0.0 || 
+            (*(this->circuit[op_index].control_qubit[2*op_number+1])).value.i != 1.0)
+        {return; }
+        
+        double newAlpha = yGate[0][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          yGate[0][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+        double newBeta  = yGate[1][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          yGate[1][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+
+        (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
+    }
+}
+void QuantumCircuit::run_ccz(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 22)
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
+
+    for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
+    {
+        //Control bit n°1 (control_qubit[op_number*2]), skip if not |1>
+        if ((*(this->circuit[op_index].control_qubit[2*op_number])).value.r != 0.0 ||
+            (*(this->circuit[op_index].control_qubit[2*op_number])).value.i != 1.0)
+        {return; }
+        //Control bit n°2 (control_qubit[op_number*2 + 1]), skip if not |1>
+        if ((*(this->circuit[op_index].control_qubit[2*op_number+1])).value.r != 0.0 || 
+            (*(this->circuit[op_index].control_qubit[2*op_number+1])).value.i != 1.0)
+        {return; }
+        
+        double newAlpha = zGate[0][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          zGate[0][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+        double newBeta  = zGate[1][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          zGate[1][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+
+        (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
+    }
+}
 
 //Hammard gate
 void QuantumCircuit::run_h(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 30)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -608,7 +735,7 @@ void QuantumCircuit::run_ch(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 31)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -630,7 +757,7 @@ void QuantumCircuit::run_s(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 40)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -646,7 +773,7 @@ void QuantumCircuit::run_t(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 41)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -664,7 +791,7 @@ void QuantumCircuit::run_swap(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 50)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -677,7 +804,7 @@ void QuantumCircuit::run_cswap(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 51)
-    {std::cerr<<"Wrong gate"<<std::endl; }
+    {std::cerr<<"Wrong gate"<<std::endl; return; }
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
@@ -690,4 +817,33 @@ void QuantumCircuit::run_cswap(unsigned short op_index)
         (*(this->circuit[op_index].target_qubit[op_number*2])).value = (*(this->circuit[op_index].target_qubit[op_number*2 +1])).value;
         (*(this->circuit[op_index].target_qubit[op_number*2 + 1])).value = tmp;
     }
+}
+
+//Controlled phase
+void QuantumCircuit::run_cp(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+}
+
+//Circuit operations
+void QuantumCircuit::run_barrier(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 100)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+}
+std::vector<char> QuantumCircuit::run_measure(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 101)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    std::vector<char> res;
+    for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
+    {
+        res.push_back((*(this->circuit[op_index].target_qubit[op_number])).measure());
+    }
+    return res;
 }

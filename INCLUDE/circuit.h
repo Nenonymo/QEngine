@@ -93,7 +93,7 @@ class QuantumCircuit
 
 
         //Circuit emulation
-        unsigned short run_operation(unsigned short operation_index);
+        std::vector<char> run();
 
 
         //Operations calculations
@@ -110,6 +110,8 @@ class QuantumCircuit
 
         //Toffoli gate
         void run_ccx(unsigned short op_index);
+        void run_ccy(unsigned short op_index);
+        void run_ccz(unsigned short op_index);
 
         //Hammard gates
         void run_h (unsigned short op_index);
@@ -132,6 +134,8 @@ class QuantumCircuit
         void run_cp(unsigned short op_index);
 
         //circuit operations();
+        void run_barrier(unsigned short op_index);
+        std::vector<char> run_measure(unsigned short op_index);
 
 
 };
