@@ -1,7 +1,6 @@
+#include "complex.h"
 #include <cmath>
 #include <iostream>
-
-#include "complex.h"
 
 
 
@@ -38,6 +37,16 @@ double* Complex::get()
 double Complex::get_norm() const
 {return sqrt(r*r + i*i); }
 
+
+
+/*****************
+ * CHANGE VALUES *
+ *****************/
+void Complex::update(double _r, double _i)
+{
+    this->r = _r;
+    this->i = _i;
+}
 
 
 /*******************

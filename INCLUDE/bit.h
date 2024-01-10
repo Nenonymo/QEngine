@@ -1,17 +1,12 @@
 #pragma once
 
 #include <cmath>
+#include "complex.h"
 
 
 class QuBit
 {
     private:
-        //Values
-        double alpha;
-        double beta;
-
-        //Internal functions
-        void normalize();
 
     public:
         //Constructor
@@ -19,13 +14,11 @@ class QuBit
         QuBit();
         ~QuBit();
 
-        //Value grabbing
-        double getAlpha() const;
-        double getBeta() const;
+        //Values
+        comp value;
 
-        void setAlpha(double new_value); //TODO
-        void setBeta(double new_value); //TODO
-
+        //Internal functions
+        void normalize();
 
         //QuBit operations
         char measure() const;

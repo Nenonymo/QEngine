@@ -246,3 +246,6 @@ void Operation::debug_operation()
             break;
     }
 }
+
+unsigned short Operation::get_gate_number() const
+{return this->gate_number; }

@@ -23,11 +23,6 @@ QuBit::~QuBit()
     
 }
 
-double QuBit::getAlpha() const
-{return this->alpha; }
-
-double QuBit::getBeta() const
-{return this->beta; }
 
 char QuBit::measure() const
 {

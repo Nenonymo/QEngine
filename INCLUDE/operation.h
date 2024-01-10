@@ -19,4 +19,5 @@ class Operation
         ~Operation();
 
         void debug_operation();
+        unsigned short get_gate_number() const;
 };

@@ -15,6 +15,9 @@ class Complex
         //get values
         double* get();
         double get_norm() const;
+
+        //change values
+        void update(double r, double i);
         
         //Transformations
         void conjugate();
@@ -44,11 +47,6 @@ class Complex
         void print_nr();
 
     private:
-        //Values
-        double a;
-        double b;
-
-        //Operators
 
 };
 

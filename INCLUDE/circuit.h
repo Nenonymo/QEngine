@@ -2,6 +2,7 @@
 
 #include "register.h"
 #include "operation.h"
+#include "gates.h"
 #include <vector>
 
 class QuantumCircuit
@@ -12,6 +13,7 @@ class QuantumCircuit
         unsigned int n_qubit, n_clbit;
 
         std::vector<Operation> circuit;
+
 
     public:
         //Constructors
@@ -88,4 +90,44 @@ class QuantumCircuit
         void print();
         void debug_operations();
         void print_circuit();      
+
+
+        //Circuit emulation
+        unsigned short run_operation(unsigned short operation_index);
+
+
+        //Operations calculations
+
+        //Pauli gates
+        void run_x(unsigned short op_index);
+        void run_y(unsigned short op_index);
+        void run_z(unsigned short op_index);
+
+        //Controlled Pauli gates
+        void run_cx(unsigned short op_index);
+        void run_cy(unsigned short op_index);
+        void run_cz(unsigned short op_index);
+
+        //Toffoli gate
+        void run_ccx(unsigned short op_index);
+
+        //S & T gates
+        void run_s(unsigned short op_index);
+        void run_t(unsigned short op_index);
+
+        //Rotation gates
+        void run_rx(unsigned short op_index);
+        void run_ry(unsigned short op_index);
+        void run_rz(unsigned short op_index);
+
+        //Swap gates
+        void run_swap(unsigned short op_index);
+        void run_cswap(unsigned short op_index);
+
+        //Controlled phase gate
+        void run_cp(unsigned short op_index);
+
+        //circuit operations();
+
+
 };
