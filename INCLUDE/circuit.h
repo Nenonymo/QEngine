@@ -111,6 +111,10 @@ class QuantumCircuit
         //Toffoli gate
         void run_ccx(unsigned short op_index);
 
+        //Hammard gates
+        void run_h (unsigned short op_index);
+        void run_ch(unsigned short op_index);
+
         //S & T gates
         void run_s(unsigned short op_index);
         void run_t(unsigned short op_index);
@@ -121,7 +125,7 @@ class QuantumCircuit
         void run_rz(unsigned short op_index);
 
         //Swap gates
-        void run_swap(unsigned short op_index);
+        void run_swap (unsigned short op_index);
         void run_cswap(unsigned short op_index);
 
         //Controlled phase gate

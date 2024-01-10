@@ -578,11 +578,48 @@ void QuantumCircuit::run_ccx(unsigned short op_index)
             (*(this->circuit[op_index].control_qubit[2*op_number+1])).value.i != 1.0)
         {return; }
         
-        //Apply x gate on target_qubit[op_number]
         double newAlpha = xGate[0][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
                           xGate[0][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
         double newBeta  = xGate[1][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
                           xGate[1][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+
+        (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
+    }
+}
+
+//Hammard gate
+void QuantumCircuit::run_h(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 30)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
+    {
+        double newAlpha = hGate[0][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          hGate[0][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+        double newBeta  = hGate[1][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          hGate[1][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+
+        (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
+    }
+}
+void QuantumCircuit::run_ch(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 31)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    for (unsigned int op_number=0; op_number<this->circuit[op_index].size; op_number++)
+    {
+        if ((*(this->circuit[op_index].control_qubit[op_number])).value.r != 0.0 || 
+            (*(this->circuit[op_index].control_qubit[op_number])).value.i != 1.0)
+        {return; }
+
+        double newAlpha = hGate[0][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          hGate[0][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+        double newBeta  = hGate[1][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
+                          hGate[1][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
 
         (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
     }
