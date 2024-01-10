@@ -1,26 +1,8 @@
 #pragma once
 
 #include "register.h"
+#include "operation.h"
 #include <vector>
-
-class Operation
-{
-    private:
-        char gate_number;
-        
-
-    public:
-        qb** target_qubit;
-        qb** control_qubit;
-        double parameter;
-        unsigned short size;
-
-        Operation(char gate_number, unsigned short size);
-        ~Operation();
-
-        void debug_operation();
-};
-
 
 class QuantumCircuit
 {
@@ -105,5 +87,5 @@ class QuantumCircuit
         void optimize();
         void print();
         void debug_operations();
-        void print_circuit();
+        void print_circuit();      
 };
