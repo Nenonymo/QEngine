@@ -199,6 +199,7 @@ void QuantumCircuit::h(QuantumRegister target_qureg)
     {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
     circuit.push_back(tmp);
 }
+
 //Controlled Hammard gates
 void QuantumCircuit::ch(unsigned short control_qubit, unsigned short target_qubit)
 {
@@ -380,17 +381,163 @@ void QuantumCircuit::barrier()
 }
 
 //Measurement
-void QuantumCircuit::measure(unsigned short target_qubit)
+void QuantumCircuit::measure(unsigned short target_qubit, unsigned short target_clbit)
 {
     Operation tmp(101, 1);
     tmp.target_qubit[0] = this->qubits[target_qubit];
+    tmp.target_clbit[0] = this->clbits[target_clbit];
     circuit.push_back(tmp);
 }
-void QuantumCircuit::measure(QuantumRegister target_qureg)
+void QuantumCircuit::measure(QuantumRegister target_qureg, ClassicalRegister target_clreg)
 {
     Operation tmp(101, target_qureg.get_size());
     for (unsigned short i=0; i<target_qureg.get_size(); i++)
-    {tmp.target_qubit[i] = target_qureg.get_bit_address(i); }
+    {
+        tmp.target_qubit[i] = target_qureg.get_bit_address(i); 
+        tmp.target_clbit[i] = target_clreg.get_bit_address(i);
+    }
+    circuit.push_back(tmp);
+}
+
+//Classical gates
+void QuantumCircuit::not_ (unsigned short  target_clbit)
+{
+    Operation tmp(200, 1);
+    tmp.target_clbit[0] = this->clbits[target_clbit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::not_ (ClassicalRegister target_clreg)
+{
+    Operation tmp(200, target_clreg.get_size());
+    for (unsigned int op_number=0; op_number<target_clreg.get_size(); op_number++)
+    {
+        tmp.target_clbit[op_number] = target_clreg.get_bit_address(op_number);
+    }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::and_ (unsigned short input_clbit1, unsigned short input_clbit2, unsigned short output_clbit)
+{
+    Operation tmp(201, 1);
+    tmp.target_clbit[0] = this->clbits[input_clbit1];
+    tmp.target_clbit[1] = this->clbits[input_clbit2];
+    tmp.target_clbit[2] = this->clbits[output_clbit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::and_ (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg)
+{
+    if (input_clreg1.get_size() != input_clreg2.get_size() or input_clreg1.get_size() != output_clreg.get_size())
+    {
+        std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
+        return;
+    }
+    
+    Operation tmp(201, input_clreg1.get_size());
+    for (unsigned int op_number=0; op_number<input_clreg1.get_size(); op_number++)
+    {
+        tmp.target_clbit[op_number*3] = input_clreg1.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +1] = input_clreg2.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +2] = output_clreg.get_bit_address(op_number);
+    }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::nand_(unsigned short input_clbit1, unsigned short input_clbit2, unsigned short output_clbit)
+{
+    Operation tmp(202, 1);
+    tmp.target_clbit[0] = this->clbits[input_clbit1];
+    tmp.target_clbit[1] = this->clbits[input_clbit2];
+    tmp.target_clbit[2] = this->clbits[output_clbit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::nand_(ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg)
+{
+    if (input_clreg1.get_size() != input_clreg2.get_size() or input_clreg1.get_size() != output_clreg.get_size())
+    {
+        std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
+        return;
+    }
+    
+    Operation tmp(202, input_clreg1.get_size());
+    for (unsigned int op_number=0; op_number<input_clreg1.get_size(); op_number++)
+    {
+        tmp.target_clbit[op_number*3] = input_clreg1.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +1] = input_clreg2.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +2] = output_clreg.get_bit_address(op_number);
+    }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::or_  (unsigned short input_clbit1, unsigned short input_clbit2, unsigned short output_clbit)
+{
+    Operation tmp(203, 1);
+    tmp.target_clbit[0] = this->clbits[input_clbit1];
+    tmp.target_clbit[1] = this->clbits[input_clbit2];
+    tmp.target_clbit[2] = this->clbits[output_clbit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::or_  (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg)
+{
+    if (input_clreg1.get_size() != input_clreg2.get_size() or input_clreg1.get_size() != output_clreg.get_size())
+    {
+        std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
+        return;
+    }
+    
+    Operation tmp(203, input_clreg1.get_size());
+    for (unsigned int op_number=0; op_number<input_clreg1.get_size(); op_number++)
+    {
+        tmp.target_clbit[op_number*3] = input_clreg1.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +1] = input_clreg2.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +2] = output_clreg.get_bit_address(op_number);
+    }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::nor_ (unsigned short input_clbit1, unsigned short input_clbit2, unsigned short output_clbit)
+{
+    Operation tmp(204, 1);
+    tmp.target_clbit[0] = this->clbits[input_clbit1];
+    tmp.target_clbit[1] = this->clbits[input_clbit2];
+    tmp.target_clbit[2] = this->clbits[output_clbit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::nor_ (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg)
+{
+    if (input_clreg1.get_size() != input_clreg2.get_size() or input_clreg1.get_size() != output_clreg.get_size())
+    {
+        std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
+        return;
+    }
+    
+    Operation tmp(204, input_clreg1.get_size());
+    for (unsigned int op_number=0; op_number<input_clreg1.get_size(); op_number++)
+    {
+        tmp.target_clbit[op_number*3] = input_clreg1.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +1] = input_clreg2.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +2] = output_clreg.get_bit_address(op_number);
+    }
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::xor_ (unsigned short input_clbit1, unsigned short input_clbit2, unsigned short output_clbit)
+{
+    Operation tmp(205, 1);
+    tmp.target_clbit[0] = this->clbits[input_clbit1];
+    tmp.target_clbit[1] = this->clbits[input_clbit2];
+    tmp.target_clbit[2] = this->clbits[output_clbit];
+    circuit.push_back(tmp);
+}
+void QuantumCircuit::xor_ (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg)
+{
+    if (input_clreg1.get_size() != input_clreg2.get_size() or input_clreg1.get_size() != output_clreg.get_size())
+    {
+        std::cerr<<"Quantum registers must be of same dimensions"<<std::endl;
+        return;
+    }
+    
+    Operation tmp(205, input_clreg1.get_size());
+    for (unsigned int op_number=0; op_number<input_clreg1.get_size(); op_number++)
+    {
+        tmp.target_clbit[op_number*3] = input_clreg1.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +1] = input_clreg2.get_bit_address(op_number);
+        tmp.target_clbit[op_number*3 +2] = output_clreg.get_bit_address(op_number);
+    }
     circuit.push_back(tmp);
 }
 
@@ -437,12 +584,9 @@ void QuantumCircuit::print_circuit()
 /*********************
  * CIRCUIT EMULATION *
  *********************/
-std::vector<char> QuantumCircuit::run()
+char* QuantumCircuit::run()
 {
-    unsigned short n = this->circuit.size();
-    std::vector<char> results;
-
-    for (unsigned short op_index=0; op_index<n; op_index++)
+    for (unsigned short op_index=0; op_index<this->circuit.size(); op_index++)
     {
         switch (this->circuit[op_index].get_gate_number())
         {
@@ -506,27 +650,44 @@ std::vector<char> QuantumCircuit::run()
             case 100: //barrier
                 this->run_barrier(op_index);
                 break;
-            case 101:
-                std::vector<char> res = this->run_measure(op_index);
-                for (unsigned short elt=0; elt<res.size(); elt++)
-                {results.push_back(res[elt]); }
+            case 101: //measure
+                this->run_measure(op_index);
+                break;
+            case 200: //not
+                this->run_not(op_index);
+                break;
+            case 201: //and
+                this->run_and(op_index);
+                break;
+            case 202: //nand
+                this->run_nand(op_index);
+                break;
+            case 203: //or
+                this->run_or(op_index);
+                break;
+            case 204: //nor
+                this->run_nor(op_index);
+                break;
+            case 205: //xor
+                this->run_xor(op_index);
+                break;
+        
+            default:
+                std::cerr<<"Gate number not recognised"<<std::endl;
                 break;
         }
     }
+    char* results = new char[this->n_clbit];
+    for (unsigned short i=0; i<this->n_clbit; i++)
+    {results[i] = (*(this->clbits[i])).value ; }
     return results;
 }
-
-
-
-
-
 
 
 
 /***************************
  * OPERATIONS CALCULATIONS *
  ***************************/
-
 //Pauli gates
 void QuantumCircuit::run_x(unsigned short op_index)
 {
@@ -715,16 +876,13 @@ void QuantumCircuit::run_ccz(unsigned short op_index)
     }
 }
 
-
-//Rotation gates
+//Rotation gates //TODO: Implement all rotation gates
 void QuantumCircuit::run_rx(unsigned short op_index)
 {}
 void QuantumCircuit::run_ry(unsigned short op_index)
 {}
 void QuantumCircuit::run_rz(unsigned short op_index)
 {}
-
-
 
 //Hammard gate
 void QuantumCircuit::run_h(unsigned short op_index)
@@ -837,6 +995,8 @@ void QuantumCircuit::run_cp(unsigned short op_index)
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 60)
     {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement controlled phase computations
 }
 
 //Circuit operations
@@ -846,16 +1006,64 @@ void QuantumCircuit::run_barrier(unsigned short op_index)
     if (this->circuit[op_index].get_gate_number() != 100)
     {std::cerr<<"Wrong gate"<<std::endl; }
 }
-std::vector<char> QuantumCircuit::run_measure(unsigned short op_index)
+void QuantumCircuit::run_measure(unsigned short op_index)
 {
     //make sure good gate number and good operation to not cause segfaults
     if (this->circuit[op_index].get_gate_number() != 101)
     {std::cerr<<"Wrong gate"<<std::endl; }
 
-    std::vector<char> res;
     for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
     {
-        res.push_back((*(this->circuit[op_index].target_qubit[op_number])).measure());
+        (*(this->circuit[op_index].target_clbit[op_number])).value = ((*(this->circuit[op_index].target_qubit[op_number])).measure());
     }
-    return res;
+}
+
+//Classical gates
+void QuantumCircuit::run_not(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement gate content
+}
+void QuantumCircuit::run_and(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement gate content
+}
+void QuantumCircuit::run_nand(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement gate content
+}
+void QuantumCircuit::run_or(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement gate content
+}
+void QuantumCircuit::run_nor(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement gate content
+}
+void QuantumCircuit::run_xor(unsigned short op_index)
+{
+    //make sure good gate number and good operation to not cause segfaults
+    if (this->circuit[op_index].get_gate_number() != 60)
+    {std::cerr<<"Wrong gate"<<std::endl; }
+
+    //TODO: implement gate content
 }

@@ -12,6 +12,7 @@ class Operation
     public:
         qb** target_qubit;
         qb** control_qubit;
+        cb** target_clbit;
         double parameter;
         unsigned short size;
 

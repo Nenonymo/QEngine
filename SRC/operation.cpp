@@ -14,100 +14,153 @@ Operation::Operation(char gate_number, unsigned short size)
         case 0: //  x   1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
         case 1: //  cx  1t  1c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size];
+            this->target_clbit = nullptr;
             break;
         case 2: //  ccx 1t  2c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size*2];
+            this->target_clbit = nullptr;
             break;
         case 5: //  rx  1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
 
         // y Gates
         case 10: // y   1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
         case 11: // cy  1t  1c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size];
+            this->target_clbit = nullptr;
             break;
         case 12: // ccy 1t  2c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size*2];
+            this->target_clbit = nullptr;
             break;
         case 15: // ry  1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
 
         // z Gates
         case 20: // z   1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
         case 21: // cz  1t  1c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size];
+            this->target_clbit = nullptr;
             break;
         case 22: // ccz 1t  2c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size*2];
+            this->target_clbit = nullptr;
             break;
         case 25: // rz  1t  0t
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
 
         // Hammard Gates
         case 30: // h   1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
         case 31: // ch  1t  1c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size];
+            this->target_clbit = nullptr;
             break;
 
         // S & T
         case 40: // s   1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
         case 41: // t   1t  0c
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
 
         // Swap
         case 50: // Swap    2t  0c
             this->target_qubit = new qb*[2*size];
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
         case 51: // cSwap   2t  1c
             this->target_qubit = new qb*[2*size];
             this->control_qubit = new qb*[size];
+            this->target_clbit = nullptr;
             break;
 
 
         case 60: // cp  1t  1c
             this->target_qubit = new qb*[size];
             this->control_qubit = new qb*[size];
+            this->target_clbit = nullptr;
             break;
 
         // Circuit management
         case 100: // barrier
             this->target_qubit = nullptr;
             this->control_qubit = nullptr;
+            this->target_clbit = nullptr;
             break;
-        case 101: // measuring
+        case 101: // measuring  1t  1cb
             this->target_qubit = new qb*[size];
             this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
+            break;
+
+        //Classical gates
+        case 200: // not    1cb
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
+            break;
+        case 201: // and    3cb
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
+            break;
+        case 202: // nand   3cb
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
+            break;
+        case 203: // or     3cb
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
+            break;
+        case 204: // nor    3cb
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
+            break;
+        case 205: // xor    3cb
+            this->target_qubit = nullptr;
+            this->control_qubit = nullptr;
+            this->target_clbit = new cb*[size];
             break;
 
         // Non listed gate number
@@ -245,7 +298,7 @@ void Operation::debug_operation()
         case 101: // measuring
             printf("Measure");
             for(unsigned short i=0; i<this->size; i++)
-            {printf("Op n°%d: {t=%p}", i, this->target_qubit[i]); }
+            {printf("Op n°%d: {qb=%p; cb=%p}", i, this->target_qubit[i], this->target_clbit[i]); }
             break;
 
         // Non listed gate number

@@ -77,12 +77,22 @@ class QuantumCircuit
 
         //Circuit operations
         void barrier(); //  100
-        void measure(unsigned short  target_qubit); //  101
-        void measure(QuantumRegister target_qureg); //  101
-        
+        void measure(unsigned short  target_qubit, unsigned short    target_clbit); //  101
+        void measure(QuantumRegister target_qureg, ClassicalRegister target_clreg); //  101
 
-
-        //Circuit management
+        //Classical gates
+        void not_ (unsigned short    target_clbit);
+        void not_ (ClassicalRegister target_clreg);
+        void and_ (unsigned short    input_clbit1, unsigned short    input_clbit2, unsigned short    output_clbit);
+        void and_ (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg);
+        void nand_(unsigned short    input_clbit1, unsigned short    input_clbit2, unsigned short    output_clbit);
+        void nand_(ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg);
+        void or_  (unsigned short    input_clbit1, unsigned short    input_clbit2, unsigned short    output_clbit);
+        void or_  (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg);
+        void nor_ (unsigned short    input_clbit1, unsigned short    input_clbit2, unsigned short    output_clbit);
+        void nor_ (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg);
+        void xor_ (unsigned short    input_clbit1, unsigned short    input_clbit2, unsigned short    output_clbit);
+        void xor_ (ClassicalRegister input_clreg1, ClassicalRegister input_clreg2, ClassicalRegister output_clreg);
 
         //Circuit cleaning
         void purge_operations();
@@ -93,7 +103,7 @@ class QuantumCircuit
 
 
         //Circuit emulation
-        std::vector<char> run();
+        char* run();
 
 
         //Operations calculations
@@ -135,7 +145,14 @@ class QuantumCircuit
 
         //circuit operations();
         void run_barrier(unsigned short op_index);
-        std::vector<char> run_measure(unsigned short op_index);
+        void run_measure(unsigned short op_index);
 
+        //Classical gates
+        void run_not (unsigned short op_index);
+        void run_and (unsigned short op_index);
+        void run_nand(unsigned short op_index);
+        void run_or  (unsigned short op_index);
+        void run_nor (unsigned short op_index);
+        void run_xor (unsigned short op_index);
 
 };
