@@ -107,7 +107,6 @@ class QuantumCircuit
 
 
         //Operations calculations
-
         //Pauli gates
         void run_x(unsigned short op_index);
         void run_y(unsigned short op_index);
@@ -154,5 +153,4 @@ class QuantumCircuit
         void run_or  (unsigned short op_index);
         void run_nor (unsigned short op_index);
         void run_xor (unsigned short op_index);
-
 };
