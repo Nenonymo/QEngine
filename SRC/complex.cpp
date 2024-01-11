@@ -58,7 +58,7 @@ void Complex::conjugate()
 }
 Complex Complex::get_conjugate()
 {
-    return Complex(this->a, -(this->i));
+    return Complex(this->r, -(this->i));
 }
 
 

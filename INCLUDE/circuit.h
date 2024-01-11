@@ -1,8 +1,8 @@
 #pragma once
 
+#include "gates.h"
 #include "register.h"
 #include "operation.h"
-#include "gates.h"
 #include <vector>
 
 class QuantumCircuit

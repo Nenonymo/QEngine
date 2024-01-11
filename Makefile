@@ -8,6 +8,7 @@ OBJS =  $(SRC)/complex.o \
 		$(SRC)/matrices.o \
 		$(SRC)/bit.o \
 		$(SRC)/register.o \
+		$(SRC)/operation.o \
 		$(SRC)/circuit.o \
 		$(SRC)/main.o
 

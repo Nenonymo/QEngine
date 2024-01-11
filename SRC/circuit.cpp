@@ -416,10 +416,10 @@ void QuantumCircuit::optimize()
 void QuantumCircuit::print()
 {
     printf("Debug of QuantumCircuit.");
-    printf("Contains: \n\t%d\tqubits\n\t%d\tclbits\n\t%d\tgates", this->n_qubit, this->n_clbit, this->circuit.size());
+    printf("Contains: \n\t%d\tqubits\n\t%d\tclbits\n\t%lld\tgates", this->n_qubit, this->n_clbit, this->circuit.size());
     printf("Qubits:");
-    for (unsigned short i=0; i<n_qubit; i++) {printf("\t%d", qubits[i]); }
-    for (unsigned short i=0; i<n_clbit; i++) {printf("\t%d", clbits[i]); }
+    for (unsigned short i=0; i<n_qubit; i++) {printf("\t%p\t%s", qubits[i], (*qubits[i]).to_cstring()); }
+    for (unsigned short i=0; i<n_clbit; i++) {printf("\t%p\t%s", clbits[i], (*clbits[i]).to_cstring()); }
 }
 void QuantumCircuit::debug_operations()
 {
@@ -634,6 +634,7 @@ void QuantumCircuit::run_cz(unsigned short op_index)
                           zGate[0][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
         double newBeta  = zGate[1][0] * (*(this->circuit[op_index].target_qubit[op_number])).value.r + 
                           zGate[1][1] * (*(this->circuit[op_index].target_qubit[op_number])).value.i;
+        (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
     }
 }
 
@@ -713,6 +714,17 @@ void QuantumCircuit::run_ccz(unsigned short op_index)
         (*(this->circuit[op_index].target_qubit[op_number])).value.update(newAlpha, newBeta);
     }
 }
+
+
+//Rotation gates
+void QuantumCircuit::run_rx(unsigned short op_index)
+{}
+void QuantumCircuit::run_ry(unsigned short op_index)
+{}
+void QuantumCircuit::run_rz(unsigned short op_index)
+{}
+
+
 
 //Hammard gate
 void QuantumCircuit::run_h(unsigned short op_index)

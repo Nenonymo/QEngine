@@ -168,12 +168,13 @@ comp Matrice::dot_product(Matrice const& obj) //TODO dot product
     {
         result += this->get_val(i) * obj.get_val(i);
     }
+    return result;
 }
 
 
 Matrice Matrice::dagger() //TODO dagger
 {
-
+    return *this;
 }
 
 
