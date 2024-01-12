@@ -996,7 +996,14 @@ void QuantumCircuit::run_cp(unsigned short op_index)
     if (this->circuit[op_index].get_gate_number() != 60)
     {std::cerr<<"Wrong gate"<<std::endl; }
 
-    //TODO: implement controlled phase computations
+    for (unsigned short op_number=0; op_number<this->circuit[op_index].size; op_number++)
+    {
+        if ((*(this->circuit[op_index].control_qubit[op_number])).value.r != 0.0 ||
+            (*(this->circuit[op_index].control_qubit[op_number])).value.i != 1.0)
+        {return; }
+
+        (*(this->circuit[op_index].target_qubit[op_number*2 + 1])).value.i = (*(this->circuit[op_index].target_qubit[op_number*2 + 1])).value.i * std::exp(this->circuit[op_index].parameter);
+    }
 }
 
 //Circuit operations

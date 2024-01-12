@@ -14,6 +14,54 @@ class QuantumCircuit
 
         std::vector<Operation> circuit;
 
+        //Operations calculations
+        //Pauli gates
+        void run_x(unsigned short op_index);
+        void run_y(unsigned short op_index);
+        void run_z(unsigned short op_index);
+
+        //Controlled Pauli gates
+        void run_cx(unsigned short op_index);
+        void run_cy(unsigned short op_index);
+        void run_cz(unsigned short op_index);
+
+        //Toffoli gate
+        void run_ccx(unsigned short op_index);
+        void run_ccy(unsigned short op_index);
+        void run_ccz(unsigned short op_index);
+
+        //Hammard gates
+        void run_h (unsigned short op_index);
+        void run_ch(unsigned short op_index);
+
+        //S & T gates
+        void run_s(unsigned short op_index);
+        void run_t(unsigned short op_index);
+
+        //Rotation gates
+        void run_rx(unsigned short op_index);
+        void run_ry(unsigned short op_index);
+        void run_rz(unsigned short op_index);
+
+        //Swap gates
+        void run_swap (unsigned short op_index);
+        void run_cswap(unsigned short op_index);
+
+        //Controlled phase gate
+        void run_cp(unsigned short op_index);
+
+        //circuit operations();
+        void run_barrier(unsigned short op_index);
+        void run_measure(unsigned short op_index);
+
+        //Classical gates
+        void run_not (unsigned short op_index);
+        void run_and (unsigned short op_index);
+        void run_nand(unsigned short op_index);
+        void run_or  (unsigned short op_index);
+        void run_nor (unsigned short op_index);
+        void run_xor (unsigned short op_index);
+
 
     public:
         //Constructors
@@ -104,53 +152,4 @@ class QuantumCircuit
 
         //Circuit emulation
         char* run();
-
-
-        //Operations calculations
-        //Pauli gates
-        void run_x(unsigned short op_index);
-        void run_y(unsigned short op_index);
-        void run_z(unsigned short op_index);
-
-        //Controlled Pauli gates
-        void run_cx(unsigned short op_index);
-        void run_cy(unsigned short op_index);
-        void run_cz(unsigned short op_index);
-
-        //Toffoli gate
-        void run_ccx(unsigned short op_index);
-        void run_ccy(unsigned short op_index);
-        void run_ccz(unsigned short op_index);
-
-        //Hammard gates
-        void run_h (unsigned short op_index);
-        void run_ch(unsigned short op_index);
-
-        //S & T gates
-        void run_s(unsigned short op_index);
-        void run_t(unsigned short op_index);
-
-        //Rotation gates
-        void run_rx(unsigned short op_index);
-        void run_ry(unsigned short op_index);
-        void run_rz(unsigned short op_index);
-
-        //Swap gates
-        void run_swap (unsigned short op_index);
-        void run_cswap(unsigned short op_index);
-
-        //Controlled phase gate
-        void run_cp(unsigned short op_index);
-
-        //circuit operations();
-        void run_barrier(unsigned short op_index);
-        void run_measure(unsigned short op_index);
-
-        //Classical gates
-        void run_not (unsigned short op_index);
-        void run_and (unsigned short op_index);
-        void run_nand(unsigned short op_index);
-        void run_or  (unsigned short op_index);
-        void run_nor (unsigned short op_index);
-        void run_xor (unsigned short op_index);
 };
