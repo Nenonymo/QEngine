@@ -606,6 +606,12 @@ char* QuantumCircuit::run()
 
     for (unsigned short op_index=0; op_index<this->circuit.size(); op_index++)
     {
+        printf("Op n%d:\n", op_index);
+        for (unsigned short i=0; i<this->n_qubit; i++)
+        {this->qubits[i]->print_amplitudes();
+        printf("   ");}
+        printf("\n");
+
         switch (this->circuit[op_index]->get_gate_number())
         {
             case 0: //x
@@ -735,8 +741,8 @@ void QuantumCircuit::run_x(unsigned short op_index)
         comp newAmp1  = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * xGate[1][0] + 
                           (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * xGate[1][1];
 
-        (*(this->circuit[op_index]->target_qubit[op_number])).amp0 = newAmp0;
-        (*(this->circuit[op_index]->target_qubit[op_number])).amp0 = newAmp1;
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
     }
 }
 void QuantumCircuit::run_y(unsigned short op_index) //Multiply by xGate matrix ([[0,1],[1,0]]), aka swap alpha and beta
@@ -779,13 +785,8 @@ void QuantumCircuit::run_cx(unsigned short op_index)
     if (this->circuit[op_index]->get_gate_number() != 1)
     {std::cerr<<"Wrong gate"<<std::endl; return; }
 
-    
-
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        printf("Before cx: ");
-        this->circuit[op_index]->target_qubit[op_number]->print_amplitudes();
-        printf("\n");
         comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  cxGate[0][0] +
                         (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  cxGate[0][1] +
                         (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * cxGate[0][2] +
@@ -803,14 +804,10 @@ void QuantumCircuit::run_cx(unsigned short op_index)
                         (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * cxGate[3][2] +
                         (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * cxGate[3][3];
 
-        (*(this->circuit[op_index]->target_qubit[op_number])).amp0 = newAmp0;
-        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 = newAmp1;
-        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 = newCAmp0;
-        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 = newCAmp1;
-
-        printf("After cx: ");
-        this->circuit[op_index]->target_qubit[op_number]->print_amplitudes();
-        printf("\n");
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp0(newCAmp0);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp1(newCAmp1);
     }
 }
 void QuantumCircuit::run_cy(unsigned short op_index)

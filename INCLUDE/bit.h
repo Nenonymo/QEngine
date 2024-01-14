@@ -41,6 +41,9 @@ class QuBit: public Bit
 
         friend std::ostream& operator<<(std::ostream& os, const QuBit& obj);
         void print_amplitudes();
+
+        void set_amp0(comp number);
+        void set_amp1(comp number);
 };
 
 typedef QuBit qb;

@@ -24,7 +24,7 @@ QuBit::QuBit(double alpha, double beta)
     this->value.r = alpha,
     this->value.i = beta;
     this->amp0 = comp(alpha, 0);
-    this->amp1 = comp(beta, 0);
+    this->amp1 = comp(0, 1);
     normalize();
 }
 
@@ -34,7 +34,7 @@ QuBit::QuBit()
     this->value.i = 0.0f;
     normalize();
     this->amp0 = comp(1, 0);
-    this->amp1 = comp(0, 0);
+    this->amp1 = comp(0, 1);
 }
 
 QuBit::~QuBit()
@@ -44,6 +44,8 @@ QuBit::~QuBit()
 
 char QuBit::measure()
 {
+    this->print_amplitudes();
+    printf("\n");
     if (static_cast<double>(rand()) / RAND_MAX < pow(this->amp0.get_norm(), 2)) 
     {   
         this->amp1 = comp(0, 0);
@@ -75,7 +77,9 @@ std::string QuBit::to_cstring() const
 void QuBit::clear_bit()
 {
     this->value.r = 1.0;
-    this->value.i = 0.0;
+    this->value.i = 0.1;
+    this->amp0 = comp(1, 0);
+    this->amp1 = comp(0, 1);
 }
 
 std::ostream& operator<<(std::ostream& os, const QuBit& obj)
@@ -86,9 +90,20 @@ std::ostream& operator<<(std::ostream& os, const QuBit& obj)
 
 void QuBit::print_amplitudes()
 {
-    printf("|0> (%.3f;%.3f)  |1> (%.3f;%.3f)", this->amp0.r, this->amp0.i, this->amp1.r, this->amp1.i);
+    printf("0(%.1f;%.1f)1(%.1f;%.1f)", this->amp0.r, this->amp0.i, this->amp1.r, this->amp1.i);
 }
 
+void QuBit::set_amp0(comp number)
+{
+    this->amp0.r = number.r;
+    this->amp0.i = number.i;
+}
+
+void QuBit::set_amp1(comp number)
+{
+    this->amp1.r = number.r;
+    this->amp1.i = number.i;
+}
 
 /*****************
  * CLASSICAL BIT *
