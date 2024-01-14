@@ -40,6 +40,7 @@ class QuBit: public Bit
         void clear_bit() override;
 
         friend std::ostream& operator<<(std::ostream& os, const QuBit& obj);
+        void print_amplitudes();
 };
 
 typedef QuBit qb;

@@ -84,6 +84,11 @@ std::ostream& operator<<(std::ostream& os, const QuBit& obj)
     return os;
 }
 
+void QuBit::print_amplitudes()
+{
+    printf("|0> (%.3f;%.3f)  |1> (%.3f;%.3f)", this->amp0.r, this->amp0.i, this->amp1.r, this->amp1.i);
+}
+
 
 /*****************
  * CLASSICAL BIT *
