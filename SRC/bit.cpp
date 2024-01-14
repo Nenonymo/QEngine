@@ -7,10 +7,14 @@ Bit::~Bit()
 {}
 
 char Bit::measure() const
-{}
-char* Bit::to_cstring() const
-{}
+{
+    return -1;
+}
+std::string Bit::to_cstring() const
+{ return std::string();}
 
+void Bit::clear_bit()
+{}
 
 /***************
  * QUANTUM BIT *
@@ -31,11 +35,10 @@ QuBit::QuBit()
 
 QuBit::~QuBit()
 {
-    
 }
 
 
-char QuBit::measure() const
+char QuBit::measure() const //TODO: shouldn't it collapse?
 {
     if (static_cast<double>(rand()) / RAND_MAX < pow(this->value.r, 2)) 
     {return 0; }
@@ -49,11 +52,18 @@ void QuBit::normalize()
     this->value.i /= factor;
 }
 
-char* QuBit::to_cstring() const
+std::string QuBit::to_cstring() const
 {
     char buffer[14];
     sprintf(buffer, "(%.3f;%.3f)", this->value.r, this->value.i);
-    return buffer;
+    std::string str = buffer;
+    return str;
+}
+
+void QuBit::clear_bit()
+{
+    this->value.r = 1.0;
+    this->value.i = 0.0;
 }
 
 
@@ -64,15 +74,21 @@ ClBit::ClBit()
 {this->value = 0; }
 
 ClBit::~ClBit()
-{}
+{
+}
 
 char ClBit::measure() const
 {return this->value; }
 
-char* ClBit::to_cstring() const
+std::string ClBit::to_cstring() const
 {
     char buffer[4];
     sprintf(buffer, "(%d)", this->value);
     return buffer;
+}
+
+void ClBit::clear_bit()
+{
+    this->value = 0;
 }
 

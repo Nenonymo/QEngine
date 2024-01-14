@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gates.h"
+//#include "gates.h"
 #include "register.h"
 #include "operation.h"
 #include <vector>
@@ -12,7 +12,7 @@ class QuantumCircuit
         cb** clbits;
         unsigned int n_qubit, n_clbit;
 
-        std::vector<Operation> circuit;
+        std::vector<Operation*> circuit;
 
         //Operations calculations
         //Pauli gates
@@ -61,6 +61,8 @@ class QuantumCircuit
         void run_or  (unsigned short op_index);
         void run_nor (unsigned short op_index);
         void run_xor (unsigned short op_index);
+
+        void clear_bits();
 
 
     public:
@@ -152,4 +154,5 @@ class QuantumCircuit
 
         //Circuit emulation
         char* run();
+        unsigned short get_ouptut_size() const;
 };

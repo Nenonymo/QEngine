@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <cstdio>
+#include <string>
 #include "complex.h"
 
 class Bit
@@ -11,7 +12,8 @@ class Bit
         virtual ~Bit();
 
         virtual char measure() const;
-        virtual char* to_cstring() const;
+        virtual std::string to_cstring() const;
+        virtual void clear_bit();
 };
 
 
@@ -31,7 +33,8 @@ class QuBit: public Bit
 
         //QuBit operations
         char measure() const override;
-        char* to_cstring() const override;
+        std::string to_cstring() const override;
+        void clear_bit() override;
 };
 
 typedef QuBit qb;
@@ -46,7 +49,8 @@ class ClBit : public Bit
         char value;
 
         char measure() const override;
-        char* to_cstring() const override;
+        std::string to_cstring() const override;
+        void clear_bit() override;
 
 };
 

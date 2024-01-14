@@ -10,6 +10,7 @@ OBJS =  $(SRC)/complex.o \
 		$(SRC)/register.o \
 		$(SRC)/operation.o \
 		$(SRC)/circuit.o \
+		$(SRC)/interface.o \
 		$(SRC)/main.o
 
 CXX = g++

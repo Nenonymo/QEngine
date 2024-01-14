@@ -17,7 +17,7 @@ class Complex
         double get_norm() const;
 
         //change values
-        void update(double r, double i);
+        void update(double r, double i, char normalize=1);
         
         //Transformations
         void conjugate();
@@ -47,6 +47,7 @@ class Complex
         void print_nr();
 
     private:
+        void normalize();
 
 };
 

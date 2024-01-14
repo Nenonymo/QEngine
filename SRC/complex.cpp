@@ -42,10 +42,20 @@ double Complex::get_norm() const
 /*****************
  * CHANGE VALUES *
  *****************/
-void Complex::update(double _r, double _i)
+void Complex::update(double _r, double _i, char normalize)
 {
     this->r = _r;
     this->i = _i;
+    if (normalize == 1)
+    {this->normalize(); }
+
+}
+
+void Complex::normalize()
+{
+    double factor = std::sqrt(pow(this->r, 2) + pow(this->i, 2));
+    this->r /= factor;
+    this->i /= factor;
 }
 
 
