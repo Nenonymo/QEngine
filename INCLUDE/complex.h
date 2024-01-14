@@ -27,6 +27,7 @@ class Complex
         Complex operator+ (Complex const& obj);
         Complex operator- (Complex const& obj);
         Complex operator* (Complex const& obj);
+        Complex operator* (double const& d);
         //Complex operator/ (Complex const& obj);
 
         //Assignment operators

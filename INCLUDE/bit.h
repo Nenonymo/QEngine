@@ -3,6 +3,7 @@
 #include <math.h>
 #include <cstdio>
 #include <string>
+#include <iostream>
 #include "complex.h"
 
 class Bit
@@ -11,7 +12,7 @@ class Bit
         Bit();
         virtual ~Bit();
 
-        virtual char measure() const;
+        virtual char measure();
         virtual std::string to_cstring() const;
         virtual void clear_bit();
 };
@@ -27,14 +28,18 @@ class QuBit: public Bit
 
         //Values
         comp value;
+        comp amp0;
+        comp amp1;
 
         //Internal functions
         void normalize();
 
         //QuBit operations
-        char measure() const override;
+        char measure() override;
         std::string to_cstring() const override;
         void clear_bit() override;
+
+        friend std::ostream& operator<<(std::ostream& os, const QuBit& obj);
 };
 
 typedef QuBit qb;
@@ -48,7 +53,7 @@ class ClBit : public Bit
 
         char value;
 
-        char measure() const override;
+        char measure() override;
         std::string to_cstring() const override;
         void clear_bit() override;
 

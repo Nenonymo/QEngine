@@ -85,6 +85,11 @@ Complex Complex::operator- (Complex const& obj)
 Complex Complex::operator* (Complex const& obj)
 {return Complex(r*obj.r - i*obj.i, r*obj.i + i*obj.r); }
 
+Complex Complex::operator* (double const& d)
+{
+    return Complex(r*d, i*d);
+}
+
 
 
 /************************

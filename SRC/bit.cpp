@@ -6,7 +6,7 @@ Bit::Bit()
 Bit::~Bit()
 {}
 
-char Bit::measure() const
+char Bit::measure()
 {
     return -1;
 }
@@ -23,6 +23,8 @@ QuBit::QuBit(double alpha, double beta)
 {
     this->value.r = alpha,
     this->value.i = beta;
+    this->amp0 = comp(alpha, 0);
+    this->amp1 = comp(beta, 0);
     normalize();
 }
 
@@ -31,6 +33,8 @@ QuBit::QuBit()
     this->value.r = 1.0f;
     this->value.i = 0.0f;
     normalize();
+    this->amp0 = comp(1, 0);
+    this->amp1 = comp(0, 0);
 }
 
 QuBit::~QuBit()
@@ -38,11 +42,19 @@ QuBit::~QuBit()
 }
 
 
-char QuBit::measure() const //TODO: shouldn't it collapse?
+char QuBit::measure()
 {
-    if (static_cast<double>(rand()) / RAND_MAX < pow(this->value.r, 2)) 
-    {return 0; }
-    return 1;
+    if (static_cast<double>(rand()) / RAND_MAX < pow(this->amp0.get_norm(), 2)) 
+    {   
+        this->amp1 = comp(0, 0);
+        return 0; 
+    }
+    else
+    {
+        this->amp0 = comp(0, 0);
+        return 1;
+    }
+    
 }
 
 void QuBit::normalize()
@@ -66,6 +78,12 @@ void QuBit::clear_bit()
     this->value.i = 0.0;
 }
 
+std::ostream& operator<<(std::ostream& os, const QuBit& obj)
+{
+    os << "|0> (" << obj.amp0.r << ";" << obj.amp0.i << " |1> (" << obj.amp1.r << ";" << obj.amp1.i << ")";
+    return os;
+}
+
 
 /*****************
  * CLASSICAL BIT *
@@ -77,7 +95,7 @@ ClBit::~ClBit()
 {
 }
 
-char ClBit::measure() const
+char ClBit::measure()
 {return this->value; }
 
 std::string ClBit::to_cstring() const
