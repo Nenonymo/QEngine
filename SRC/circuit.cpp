@@ -15,7 +15,7 @@ comp ci = comp(0, 1);
 comp c_i = comp(0, -1);
 
 comp xGate[2][2] = {{c0, c1}, {c1, c0}};
-comp yGate[2][2] = {{c0, c_1}, {c1, c0}}; // supposed to be [[0,-i],[i,0]]
+comp yGate[2][2] = {{c0, c_i}, {ci, c0}}; // supposed to be [[0,-i],[i,0]]
 comp zGate[2][2] = {{c1, c0}, {c0, c_1}};
 comp cxGate[4][4] = {{c1, c0, c0, c0}, {c0, c1, c0, c0}, {c0, c0, c0, c1}, {c0, c0, c1, c0}};
 comp cyGate[4][4] = {{c1, c0, c0, c0}, {c0, c1, c0, c0}, {c0, c0, c0, ci}, {c0, c0, c_i, c0}};
@@ -609,18 +609,21 @@ void QuantumCircuit::print_circuit()
 /*********************
  * CIRCUIT EMULATION *
  *********************/
-char* QuantumCircuit::run()
+char* QuantumCircuit::run(char verbose)
 {
     this->clear_bits();
 
-    for (unsigned short op_index=0; op_index<this->circuit.size(); op_index++)
+    if (verbose) 
     {
-        printf("Op n%d:\n", op_index);
+        printf("Start of the simulation:\n");
         for (unsigned short i=0; i<this->n_qubit; i++)
         {this->qubits[i]->print_amplitudes();
         printf("   ");}
         printf("\n");
+    }
 
+    for (unsigned short op_index=0; op_index<this->circuit.size(); op_index++)
+    {
         switch (this->circuit[op_index]->get_gate_number())
         {
             case 0: //x
@@ -708,6 +711,15 @@ char* QuantumCircuit::run()
             default:
                 std::cerr<<"Gate number not recognised"<<std::endl;
                 break;
+        }
+
+        if (verbose) 
+        {   
+            printf("Op n%d:\n", op_index);
+            for (unsigned short i=0; i<this->n_qubit; i++)
+            {this->qubits[i]->print_amplitudes();
+            printf("   ");}
+            printf("\n");
         }
     }
     char* results = new char[this->n_clbit];

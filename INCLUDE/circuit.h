@@ -153,6 +153,6 @@ class QuantumCircuit
 
 
         //Circuit emulation
-        char* run();
+        char* run(char verbose=0);
         unsigned short get_ouptut_size() const;
 };

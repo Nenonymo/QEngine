@@ -39,8 +39,6 @@ QuBit::~QuBit()
 
 char QuBit::measure()
 {
-    this->print_amplitudes();
-    printf("\n");
     if (static_cast<double>(rand()) / RAND_MAX < pow(this->amp0.get_norm(), 2)) 
     {   
         this->amp1 = comp(0, 0);
