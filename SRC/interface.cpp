@@ -5,13 +5,11 @@
 QuantumCircuit circuit_from_console()
 {
     //Quantum Circuit dimensions
-    printf("input quantum circuit dimensions (qubits, clbits): ");
     unsigned short n_qb, n_cb;
     std::cin>>n_qb>>n_cb;
     QuantumCircuit circuit(n_qb, n_cb);
 
     //Gates
-    printf("How many gates?");
     unsigned short n_gates;
     std::cin>>n_gates;
     for (unsigned short gate=0; gate<n_gates; gate++)

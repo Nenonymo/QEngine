@@ -24,13 +24,11 @@ int main(int argc, char* argv[])
     if (argc >= 2)
     {n = atoi(argv[1]); }
     
-    std::cout<<std::endl;        
     for (unsigned short i=0; i<n; i++)
     {
         char* results = circuit.run();
         printf("%d ", bin_to_int(results, circuit.get_ouptut_size()));
     }
-    std::cout<<std::endl;
     
     return 0;
 }

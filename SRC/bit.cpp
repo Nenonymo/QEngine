@@ -100,7 +100,7 @@ char ClBit::measure()
 
 std::string ClBit::to_cstring() const
 {
-    char buffer[4];
+    char buffer[7];
     sprintf(buffer, "(%d)", this->value);
     return buffer;
 }
