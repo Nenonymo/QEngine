@@ -23,7 +23,7 @@ QuBit::QuBit(double alpha, double beta)
 {
     this->value.r = alpha,
     this->value.i = beta;
-    normalize();
+    //normalize();
 }
 
 QuBit::QuBit()
@@ -82,7 +82,7 @@ char ClBit::measure() const
 
 std::string ClBit::to_cstring() const
 {
-    char buffer[4];
+    char buffer[7];
     sprintf(buffer, "(%d)", this->value);
     return buffer;
 }

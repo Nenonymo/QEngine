@@ -781,7 +781,8 @@ void QuantumCircuit::run_cx(unsigned short op_index)
     {
         if ((*(this->circuit[op_index]->control_qubit[op_number])).value.r != 0.0 ||
             (*(this->circuit[op_index]->control_qubit[op_number])).value.i != 1.0)
-        {return; }
+        {printf("QuBit not 1: %f %f\n", (*(this->circuit[op_index]->control_qubit[op_number])).value.r, (*(this->circuit[op_index]->control_qubit[op_number])).value.i );
+            return; }
 
         double newAlpha = xGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
                           xGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;

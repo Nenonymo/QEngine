@@ -1,5 +1,5 @@
 SRC = ./SRC
-INC = ./Include
+INC = ./INCLUDE
 LIB = ./LIB
 
 TARGET = QEngine.exe
