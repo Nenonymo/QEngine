@@ -27,7 +27,6 @@ class QuBit: public Bit
         ~QuBit();
 
         //Values
-        comp value;
         comp amp0;
         comp amp1;
 

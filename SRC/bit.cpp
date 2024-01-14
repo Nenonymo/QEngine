@@ -21,20 +21,15 @@ void Bit::clear_bit()
  ***************/
 QuBit::QuBit(double alpha, double beta)
 {
-    this->value.r = alpha,
-    this->value.i = beta;
     this->amp0 = comp(alpha, 0);
-    this->amp1 = comp(0, 1);
+    this->amp1 = comp(beta, 0);
     normalize();
 }
 
 QuBit::QuBit()
 {
-    this->value.r = 1.0f;
-    this->value.i = 0.0f;
-    normalize();
     this->amp0 = comp(1, 0);
-    this->amp1 = comp(0, 1);
+    this->amp1 = comp(0, 0);
 }
 
 QuBit::~QuBit()
@@ -49,37 +44,33 @@ char QuBit::measure()
     if (static_cast<double>(rand()) / RAND_MAX < pow(this->amp0.get_norm(), 2)) 
     {   
         this->amp1 = comp(0, 0);
+        this->amp0 = comp(1,0);
         return 0; 
     }
     else
     {
         this->amp0 = comp(0, 0);
+        this->amp1 = comp(1, 0);
         return 1;
     }
     
 }
 
 void QuBit::normalize()
-{
-    double factor = std::sqrt(pow(this->value.r, 2) + pow(this->value.i, 2));
-    this->value.r /= factor;
-    this->value.i /= factor;
-}
+{}
 
 std::string QuBit::to_cstring() const
 {
     char buffer[14];
-    sprintf(buffer, "(%.3f;%.3f)", this->value.r, this->value.i);
+    sprintf(buffer, "()");
     std::string str = buffer;
     return str;
 }
 
 void QuBit::clear_bit()
 {
-    this->value.r = 1.0;
-    this->value.i = 0.1;
     this->amp0 = comp(1, 0);
-    this->amp1 = comp(0, 1);
+    this->amp1 = comp(0, 0);
 }
 
 std::ostream& operator<<(std::ostream& os, const QuBit& obj)

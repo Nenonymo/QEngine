@@ -8,15 +8,24 @@ double PI = 3.14159265358979323846;
 
 double sq2 = std::sqrt(2.0);
 
-double xGate[2][2] = {{0, 1}, {1, 0}};
-double yGate[2][2] = {{0, -1}, {1, 0}}; // supposed to be [[0,-i],[i,0]]
-double zGate[2][2] = {{1, 0}, {0, -1}};
-double cxGate[4][4] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 1}, {0, 0, 1, 0}};
+comp c0 = comp(0, 0);
+comp c1 = comp(1, 0);
+comp c_1 = comp(-1, 0);
+comp ci = comp(0, 1);
+comp c_i = comp(0, -1);
 
-double hGate[2][2] = {{1.0/sq2, 1.0/sq2}, {1.0/sq2, -1.0/sq2}};
+comp xGate[2][2] = {{c0, c1}, {c1, c0}};
+comp yGate[2][2] = {{c0, c_1}, {c1, c0}}; // supposed to be [[0,-i],[i,0]]
+comp zGate[2][2] = {{c1, c0}, {c0, c_1}};
+comp cxGate[4][4] = {{c1, c0, c0, c0}, {c0, c1, c0, c0}, {c0, c0, c0, c1}, {c0, c0, c1, c0}};
+comp cyGate[4][4] = {{c1, c0, c0, c0}, {c0, c1, c0, c0}, {c0, c0, c0, ci}, {c0, c0, c_i, c0}};
+comp czGate[4][4] = {{c1, c0, c0, c0}, {c0, c1, c0, c0}, {c0, c0, c1, c0}, {c0, c0, c0, c_1}};
 
-double sGate[2][2] = {{1, 0}, {0, -1}};
-double tGate[2][2] = {{1, 0}, {0, std::exp(PI/4)}};
+comp hGate[2][2] = {{comp(1.0/sq2,0), comp(1.0/sq2,0)}, {comp(1.0/sq2,0), comp(-1.0/sq2,0)}};
+comp chGate[4][4] = {{c1,c0,c0,c0},{c0,comp(1/sq2,0),c0,comp(1/sq2,0)},{c0,comp(1/sq2,0),c0,comp(-1/sq2,0)},{c0,c0,c1,c0}};
+
+comp sGate[2][2] = {{c1, c0}, {c0, c_1}};
+comp tGate[2][2] = {{c1, c0}, {c0, comp(std::exp(PI/4),0)}};
 
 
 
@@ -753,12 +762,13 @@ void QuantumCircuit::run_y(unsigned short op_index) //Multiply by xGate matrix (
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        double newAlpha = yGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          yGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = yGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          yGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
+        comp newAmp0 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * yGate[0][0]+ 
+                            (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * yGate[0][1];
+        comp newAmp1  = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * yGate[1][0]+ 
+                            (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * yGate[1][1];
 
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
     }
 }
 void QuantumCircuit::run_z(unsigned short op_index) //Multiply by xGate matrix ([[0,-i],[i,0]])
@@ -769,12 +779,13 @@ void QuantumCircuit::run_z(unsigned short op_index) //Multiply by xGate matrix (
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        double newAlpha = zGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          zGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = zGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          zGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
+        comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * zGate[0][0] + 
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * zGate[0][1] ;
+        comp newAmp1  = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * zGate[1][0] + 
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * zGate[1][1] ;
 
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
     }
 }
 
@@ -818,16 +829,27 @@ void QuantumCircuit::run_cy(unsigned short op_index)
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        if ((*(this->circuit[op_index]->control_qubit[op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[op_number])).value.i != 1.0)
-        {return; }
+        comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  cyGate[0][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  cyGate[0][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * cyGate[0][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * cyGate[0][3];
+        comp newAmp1 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  cyGate[1][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  cyGate[1][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * cyGate[1][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * cyGate[1][3];
+        comp newCAmp0 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  cyGate[2][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  cyGate[2][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * cyGate[2][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * cyGate[2][3];
+        comp newCAmp1 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  cyGate[3][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  cyGate[3][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * cyGate[3][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * cyGate[3][3];
 
-        double newAlpha = yGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          yGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = yGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          yGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp0(newCAmp0);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp1(newCAmp1);
     }
 }
 void QuantumCircuit::run_cz(unsigned short op_index)
@@ -838,15 +860,27 @@ void QuantumCircuit::run_cz(unsigned short op_index)
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        if ((*(this->circuit[op_index]->control_qubit[op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[op_number])).value.i != 1.0)
-        {return; }
+        comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  czGate[0][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  czGate[0][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * czGate[0][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * czGate[0][3];
+        comp newAmp1 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  czGate[1][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  czGate[1][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * czGate[1][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * czGate[1][3];
+        comp newCAmp0 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  czGate[2][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  czGate[2][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * czGate[2][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * czGate[2][3];
+        comp newCAmp1 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  czGate[3][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  czGate[3][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * czGate[3][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * czGate[3][3];
 
-        double newAlpha = zGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          zGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = zGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          zGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp0(newCAmp0);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp1(newCAmp1);
     }
 }
 
@@ -859,21 +893,8 @@ void QuantumCircuit::run_ccx(unsigned short op_index)
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        //Control bit n1 (control_qubit[op_number*2]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[2*op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[2*op_number])).value.i != 1.0)
-        {return; }
-        //Control bit n2 (control_qubit[op_number*2 + 1]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[2*op_number+1])).value.r != 0.0 || 
-            (*(this->circuit[op_index]->control_qubit[2*op_number+1])).value.i != 1.0)
-        {return; }
+        //TODO: real ccx
         
-        double newAlpha = xGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          xGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = xGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          xGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
     }
 }
 void QuantumCircuit::run_ccy(unsigned short op_index)
@@ -884,21 +905,8 @@ void QuantumCircuit::run_ccy(unsigned short op_index)
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        //Control bit n1 (control_qubit[op_number*2]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[2*op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[2*op_number])).value.i != 1.0)
-        {return; }
-        //Control bit n2 (control_qubit[op_number*2 + 1]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[2*op_number+1])).value.r != 0.0 || 
-            (*(this->circuit[op_index]->control_qubit[2*op_number+1])).value.i != 1.0)
-        {return; }
-        
-        double newAlpha = yGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          yGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = yGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          yGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        //TODO: real ccy
+       
     }
 }
 void QuantumCircuit::run_ccz(unsigned short op_index)
@@ -909,21 +917,8 @@ void QuantumCircuit::run_ccz(unsigned short op_index)
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        //Control bit n1 (control_qubit[op_number*2]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[2*op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[2*op_number])).value.i != 1.0)
-        {return; }
-        //Control bit n2 (control_qubit[op_number*2 + 1]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[2*op_number+1])).value.r != 0.0 || 
-            (*(this->circuit[op_index]->control_qubit[2*op_number+1])).value.i != 1.0)
-        {return; }
+        //TODO: real ccz
         
-        double newAlpha = zGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          zGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = zGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          zGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
     }
 }
 
@@ -961,16 +956,27 @@ void QuantumCircuit::run_ch(unsigned short op_index)
 
     for (unsigned int op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        if ((*(this->circuit[op_index]->control_qubit[op_number])).value.r != 0.0 || 
-            (*(this->circuit[op_index]->control_qubit[op_number])).value.i != 1.0)
-        {return; }
+        comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  chGate[0][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  chGate[0][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * chGate[0][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * chGate[0][3];
+        comp newAmp1 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  chGate[1][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  chGate[1][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * chGate[1][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * chGate[1][3];
+        comp newCAmp0 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  chGate[2][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  chGate[2][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * chGate[2][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * chGate[2][3];
+        comp newCAmp1 = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 *  chGate[3][0] +
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 *  chGate[3][1] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp0 * chGate[3][2] +
+                        (*(this->circuit[op_index]->control_qubit[op_number])).amp1 * chGate[3][3];
 
-        double newAlpha = hGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          hGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = hGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          hGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp0(newCAmp0);
+        (*(this->circuit[op_index]->control_qubit[op_number])).set_amp1(newCAmp1);
     }
 }
 
@@ -983,12 +989,13 @@ void QuantumCircuit::run_s(unsigned short op_index)
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        double newAlpha = sGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          sGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = sGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          sGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
+        comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * sGate[0][0] + 
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * sGate[0][1];
+        comp newAmp1  = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * sGate[1][0] + 
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * sGate[1][1];
 
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
     }
 }
 void QuantumCircuit::run_t(unsigned short op_index)
@@ -999,12 +1006,13 @@ void QuantumCircuit::run_t(unsigned short op_index)
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        double newAlpha = tGate[0][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          tGate[0][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
-        double newBeta  = tGate[1][0] * (*(this->circuit[op_index]->target_qubit[op_number])).value.r + 
-                          tGate[1][1] * (*(this->circuit[op_index]->target_qubit[op_number])).value.i;
+        comp newAmp0 =  (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * tGate[0][0] + 
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * tGate[0][1];
+        comp newAmp1  = (*(this->circuit[op_index]->target_qubit[op_number])).amp0 * tGate[1][0] + 
+                        (*(this->circuit[op_index]->target_qubit[op_number])).amp1 * tGate[1][1];
 
-        (*(this->circuit[op_index]->target_qubit[op_number])).value.update(newAlpha, newBeta);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp0(newAmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number])).set_amp1(newAmp1);
     }
 }
 
@@ -1017,9 +1025,12 @@ void QuantumCircuit::run_swap(unsigned short op_index)
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        comp tmp = (*(this->circuit[op_index]->target_qubit[op_number*2])).value;
-        (*(this->circuit[op_index]->target_qubit[op_number*2])).value = (*(this->circuit[op_index]->target_qubit[op_number*2 +1])).value;
-        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).value = tmp;
+        comp tmp0 = (*(this->circuit[op_index]->target_qubit[op_number*2])).amp0;
+        comp tmp1 = (*(this->circuit[op_index]->target_qubit[op_number*2])).amp1;
+        (*(this->circuit[op_index]->target_qubit[op_number*2])).set_amp0((*(this->circuit[op_index]->target_qubit[op_number*2 +1])).amp0);
+        (*(this->circuit[op_index]->target_qubit[op_number*2])).set_amp1((*(this->circuit[op_index]->target_qubit[op_number*2 +1])).amp1);
+        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).set_amp0(tmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).set_amp1(tmp1);
     }
 }
 void QuantumCircuit::run_cswap(unsigned short op_index)
@@ -1031,13 +1042,16 @@ void QuantumCircuit::run_cswap(unsigned short op_index)
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
         //Control bit n1 (control_qubit[op_number*2]), skip if not |1>
-        if ((*(this->circuit[op_index]->control_qubit[op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[op_number])).value.i != 1.0)
+        if  ((*(this->circuit[op_index]->control_qubit[op_number])).amp0.get_norm() != 0.0 ||
+            (*(this->circuit[op_index]->control_qubit[op_number])).amp0.get_norm() != 1.0)
         {return; }
 
-        comp tmp = (*(this->circuit[op_index]->target_qubit[op_number*2])).value;
-        (*(this->circuit[op_index]->target_qubit[op_number*2])).value = (*(this->circuit[op_index]->target_qubit[op_number*2 +1])).value;
-        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).value = tmp;
+        comp tmp0 = (*(this->circuit[op_index]->target_qubit[op_number*2])).amp0;
+        comp tmp1 = (*(this->circuit[op_index]->target_qubit[op_number*2])).amp1;
+        (*(this->circuit[op_index]->target_qubit[op_number*2])).set_amp0((*(this->circuit[op_index]->target_qubit[op_number*2 +1])).amp0);
+        (*(this->circuit[op_index]->target_qubit[op_number*2])).set_amp1((*(this->circuit[op_index]->target_qubit[op_number*2 +1])).amp1);
+        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).set_amp0(tmp0);
+        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).set_amp1(tmp1);
     }
 }
 
@@ -1050,11 +1064,11 @@ void QuantumCircuit::run_cp(unsigned short op_index)
 
     for (unsigned short op_number=0; op_number<this->circuit[op_index]->size; op_number++)
     {
-        if ((*(this->circuit[op_index]->control_qubit[op_number])).value.r != 0.0 ||
-            (*(this->circuit[op_index]->control_qubit[op_number])).value.i != 1.0)
+        if  ((*(this->circuit[op_index]->control_qubit[op_number])).amp0.get_norm() != 0.0 ||
+            (*(this->circuit[op_index]->control_qubit[op_number])).amp0.get_norm() != 1.0)
         {return; }
 
-        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).value.i = (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).value.i * std::exp(this->circuit[op_index]->parameter);
+        (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).amp1 = (*(this->circuit[op_index]->target_qubit[op_number*2 + 1])).amp1 * std::exp(this->circuit[op_index]->parameter);
     }
 }
 
