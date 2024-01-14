@@ -1,1 +1,2 @@
-SimpleXandCX;test1.txt;
+SimpleXandCX test1.txt 3
+BV test2.txt 13
