@@ -1,13 +1,15 @@
 #!/bin/bash
 
-input_file="testMaster.txt"
+n=10000 #Amount of simulations
+
+input_file="./testMaster.txt" #Test master file
 
 while IFS=' ' read -r test_name file_address number; do
-    output=$(./../QEngine.exe 1000 < "$file_address")
+    output=$(./../QEngine.exe "$n" < "$file_address") #Run the simulation
 
-    count=$(echo "$output" | grep -o "\<$number\>" | wc -l)
+    count=$(echo "$output" | grep -o "\<$number\>" | wc -l) #Count the good results
 
-    ratio=$(echo "scale=3; $count / 1000" | bc)
+    ratio=$(echo "scale=3; $count / $n" | bc) #Calculate frequency of the result
 
-    echo "File: $test_name - result=$number - precision = $ratio"
+    echo "$test_name - result=$number - precision = $ratio" #Output precision
 done < "$input_file"

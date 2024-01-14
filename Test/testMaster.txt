@@ -1,2 +1,2 @@
-SimpleXandCX test1.txt 3
-BV test2.txt 13
+SimpleXandCX test_data/test1.txt 3
+BV test_data/test2.txt 13
